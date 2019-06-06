@@ -17,8 +17,7 @@ public class Spawner : MonoBehaviour
         for (int i = 0; i < randomIndex; i++)
         {
             float rotate = Random.Range(-90, 90);
-            var test = Instantiate(block, spawnPoints[i].position, Quaternion.Euler(0f, 0f, rotate));
-            //test.transform.localRotation = ;
+            Instantiate(block, spawnPoints[i].position, Quaternion.Euler(0f, 0f, rotate));
         }
     }
 }

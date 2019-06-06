@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     private float maxStretchSqr;
     private SpringJoint2D spring;
     private bool CanJump,Clicked;
-    
+
     void Awake()
     {
         spring = GetComponent<SpringJoint2D>();
@@ -61,7 +61,7 @@ public class Player : MonoBehaviour
         }
         hook_transform.position = mouseWorldPoint;
         
-        if (hookToMouse.sqrMagnitude <= 0.25) // если близко к объекту, то не прыгаем
+        if (hookToMouse.sqrMagnitude <= 0.66) // если близко к объекту, то не прыгаем
         {
             CanJump = false;
         }
