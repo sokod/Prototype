@@ -6,6 +6,7 @@ public class Test : MonoBehaviour
 {
     private bool Clicked;
     public GameObject hook;
+    private GameObject spawnedHook;
     private Vector2 mouseWorldPoint;
     // Start is called before the first frame update
     void Start()
@@ -23,21 +24,30 @@ public class Test : MonoBehaviour
     {
         if (Clicked)
             testing();
+        else
+        {
+        }
+    }
+
+    public GameObject ReturnHook()
+    {
+        return spawnedHook;
     }
 
     private void OnMouseDown()
     {
         Clicked = true;
-        hook = Instantiate(hook, mouseWorldPoint, Quaternion.identity);
+        spawnedHook = Instantiate(hook, mouseWorldPoint, Quaternion.identity);
     }
     private void OnMouseUp()
     {
         Clicked = false;
+        Destroy(spawnedHook,1f);
     }
 
     private void testing()
     {
         mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        hook.transform.position = mouseWorldPoint;
+        spawnedHook.transform.position = mouseWorldPoint;
     }
 }
