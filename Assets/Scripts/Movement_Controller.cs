@@ -12,14 +12,18 @@ public class Movement_Controller : MonoBehaviour
     private SpringJoint2D spring;
     [Space(15)]
     public float maxStretch = 3.0f;
+    public float PercentHead = 0.4f;
+
     private float maxStretchSqr;
     private GameObject player;
     private bool CanJump, Clicked;
+    private LineRenderer arrow;
 
     void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player");
         spring = player.GetComponent<SpringJoint2D>();
+        arrow = player.GetComponent<LineRenderer>();
     }
 
     // Start is called before the first frame update
@@ -57,11 +61,13 @@ public class Movement_Controller : MonoBehaviour
     private void OnMouseUp()
     {
         Clicked = false;
-        Destroy(spawned_hook,1f);
-
+        Destroy(spawned_hook,0.5f);
+        ClearLine(2);
         if (CanJump)
+        {
             spring.connectedBody = spawned_hook.GetComponent<Rigidbody2D>();
             spring.enabled = true;
+        }
     }
 
     private void Dragging()
@@ -84,5 +90,28 @@ public class Movement_Controller : MonoBehaviour
         }
         else CanJump = true;
 
+        //arrow.SetPosition(0, player.transform.position);
+        //arrow.SetPosition(1, spawned_hook.transform.position);
+        UpdateArrow();
+    }
+    private void ClearLine(int num)
+    {
+        Vector3[] arr = new Vector3[num];
+        arrow.SetPositions(arr);
+    }
+
+    private void UpdateArrow()
+    {
+        arrow.widthCurve = new AnimationCurve(
+            new Keyframe(0, 0.4f)
+            , new Keyframe(0.999f - PercentHead, 0.4f)  // neck of arrow
+            , new Keyframe(1 - PercentHead, 1f)  // max width of arrow head
+            , new Keyframe(1, 0f));  // tip of arrow
+        arrow.SetPositions(new Vector3[] {
+              spawned_hook.transform.position
+              , Vector3.Lerp(spawned_hook.transform.position, player.transform.position, 0.999f - PercentHead)
+              , Vector3.Lerp(spawned_hook.transform.position, player.transform.position, 1 - PercentHead)
+              , player.transform.position });
     }
 }
+
