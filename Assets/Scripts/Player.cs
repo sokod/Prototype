@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         spring.enabled = false;
-        Debug.Log("Collision with " + collision.transform.name);
+        //Debug.Log("Collision with " + collision.transform.name);
     }
 
 }

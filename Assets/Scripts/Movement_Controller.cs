@@ -2,22 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement_Controller : MonoBehaviour
+public class Movement_Controller : MonoBehaviour // Can be deleted!
 {
     public GameObject hook_prefab;
 
     private GameObject spawned_hook;
-    private Vector2 mouseWorldPoint;
-    private Ray2D rayToMouse;
+    private Vector2 touchedWorldPoint; //позиция касания относительно камеры
+    private Ray2D rayToTouchedPoint; // луч от центра объекта к точке касания
     private SpringJoint2D spring;
     [Space(15)]
     public float maxStretch = 3.0f;
     public float PercentHead = 0.4f;
 
+    private Touch touch; //касание
     private float maxStretchSqr;
     private GameObject player;
-    private bool CanJump, Clicked;
+    private bool CanJump;
     private LineRenderer arrow;
+
 
     void Awake()
     {
@@ -36,64 +38,77 @@ public class Movement_Controller : MonoBehaviour
     void Update()
     {
 
+        if (Input.touchCount > 0)
+        {
+            touch = Input.GetTouch(0);
+            Control(touch);
+        }
+    }
+
+    private void Control(Touch touch)
+    {
+        switch (touch.phase)
+        {
+
+            case TouchPhase.Began:
+                spawned_hook = Instantiate(hook_prefab, touchedWorldPoint, Quaternion.identity);
+                spring.enabled = false;
+                Dragging();
+                break;
+
+            case TouchPhase.Moved:
+            case TouchPhase.Stationary:
+                Dragging();
+                break;
+
+            case TouchPhase.Canceled:
+            case TouchPhase.Ended:
+                Destroy(spawned_hook, 0.5f);
+                ClearLine(2);
+                if (CanJump)
+                {
+                    spring.connectedBody = spawned_hook.GetComponent<Rigidbody2D>();
+                    spring.enabled = true;
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 
     private void FixedUpdate()
     {
-        if (Clicked)
-            Dragging();
-        else
-        {
-        }
     }
 
-    public GameObject ReturnHook()
-    {
-        return spawned_hook;
-    }
-
-    private void OnMouseDown()
-    {
-        Clicked = true;
-        spawned_hook = Instantiate(hook_prefab, mouseWorldPoint, Quaternion.identity);
-        spring.enabled = false;
-    }
-    private void OnMouseUp()
-    {
-        Clicked = false;
-        Destroy(spawned_hook,0.5f);
-        ClearLine(2);
-        if (CanJump)
-        {
-            spring.connectedBody = spawned_hook.GetComponent<Rigidbody2D>();
-            spring.enabled = true;
-        }
-    }
 
     private void Dragging()
     {
-        mouseWorldPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        spawned_hook.transform.position = mouseWorldPoint;
+        touchedWorldPoint = Camera.main.ScreenToWorldPoint(touch.position);
+        spawned_hook.transform.position = touchedWorldPoint;
 
-        rayToMouse = new Ray2D(player.transform.position, Vector2.zero);
-        Vector2 hookToMouse = new Vector2(mouseWorldPoint.x - player.transform.position.x, mouseWorldPoint.y - player.transform.position.y);
+        rayToTouchedPoint = new Ray2D(player.transform.position, Vector2.zero);
+        Vector2 hookToMouse = new Vector2(touchedWorldPoint.x - player.transform.position.x, touchedWorldPoint.y - player.transform.position.y);
         if (hookToMouse.sqrMagnitude > maxStretchSqr) // если слишком далеко от якоря, то принудетельно ставим на максимально доступное растояние от якоря
         {
-            rayToMouse.direction = hookToMouse;
-            mouseWorldPoint = rayToMouse.GetPoint(maxStretch);
+            rayToTouchedPoint.direction = hookToMouse;
+            touchedWorldPoint = rayToTouchedPoint.GetPoint(maxStretch);
         }
-        spawned_hook.transform.position = mouseWorldPoint;
+        spawned_hook.transform.position = touchedWorldPoint;
 
         if (hookToMouse.sqrMagnitude <= 0.66) // если близко к объекту, то не прыгаем
         {
+            ClearLine(2);
             CanJump = false;
         }
-        else CanJump = true;
+        else
+        {
+            CanJump = true;
+            UpdateArrow();
+        }
 
-        //arrow.SetPosition(0, player.transform.position);
-        //arrow.SetPosition(1, spawned_hook.transform.position);
-        UpdateArrow();
     }
+
     private void ClearLine(int num)
     {
         Vector3[] arr = new Vector3[num];
