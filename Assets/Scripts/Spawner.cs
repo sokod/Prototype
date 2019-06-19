@@ -9,9 +9,9 @@ public class Spawner : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        spawn();
+        Spawn();
     }
-    void spawn()
+    void Spawn()
     {
         int randomIndex = Random.Range(0, spawnPoints.Length);
         for (int i = 0; i < randomIndex; i++)

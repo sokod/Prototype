@@ -7,7 +7,7 @@ public class Game_Manager : MonoBehaviour
 
     public static void StartSlowMotion(float slowDownFactor)
     {
-        factor = slowDownFactor;
+        factor += slowDownFactor;
         Time.timeScale = 1f/slowDownFactor;
         Time.fixedDeltaTime /= slowDownFactor;
         slowMotionEnabled = true;
@@ -18,6 +18,7 @@ public class Game_Manager : MonoBehaviour
         {
             Time.timeScale = 1f;
             Time.fixedDeltaTime *= factor;
+            factor = 0f;
             slowMotionEnabled = false;
         }
     }
