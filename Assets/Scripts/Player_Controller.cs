@@ -180,6 +180,7 @@ public class Player_Controller : MonoBehaviour
         arrowTail.SetPosition(0, (Vector2)player.transform.position); //начальная точка от объекта игрока
         arrowTail.SetPosition(1, (Vector2)touchedWorldPoint); //конечная точка к касанию
         arrowHeadSprite.color= new Color(1f, 1f - force, 1f - force, 1f); // обновляем цвет конца стрелки
+        arrowHead.transform.localScale = new Vector2(Mathf.Clamp(1.35f + force,1.35f,2f), Mathf.Clamp(1.35f + force, 1.35f, 2f)); // обновляем размер стрелки
 
         //какая-то магия.
         float angle = Mathf.Atan2(pushForceDirection.y, pushForceDirection.x) * Mathf.Rad2Deg; // фиг знает что
