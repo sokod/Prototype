@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
 {
+    public ParticleSystem jumpEffect;
+    [Space(15)]
     public float maxStretch, jumpForce; // регулировка дистанции отдягивания, силы прыжка
     public int maxJumps; //максимальное кол-во прыжков
 
@@ -76,12 +78,11 @@ public class Player_Controller : MonoBehaviour
         player_rb.velocity = Vector2.zero; //обнуляем перемещение игрока
         player_rb.inertia = 0f;
         player_rb.angularVelocity = 0f;
-        //force = (Mathf.Clamp(pushForceDirection.sqrMagnitude, 0f, maxStretchSqr)) / maxStretchSqr; // ограничиваем силу прыжка от 0 до 1;
         player_rb.AddForce(pushForceDirection.normalized * force * jumpForce, ForceMode2D.Force); // толкаем в направлении нажатия с силой * multiplayer
         jumpReady = false;
         jumpCount--;
-
-        player.transform.localScale *= 0.8f; 
+        jumpEffect.Play(); // включаем выброс частиц
+        player.transform.localScale *= 0.7f;// уменшаем героя
     }
 
     /// <summary>

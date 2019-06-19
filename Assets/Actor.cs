@@ -21,7 +21,7 @@ public class Actor : MonoBehaviour
     {
         if (!controller.CanJump())
         {
-            sprite.color = Color.black;
+            sprite.color = new Color(1f, 0.92f, 0.6f, 1f);
         }
         else
         {
