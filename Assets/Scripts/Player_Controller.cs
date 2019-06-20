@@ -65,7 +65,7 @@ public class Player_Controller : MonoBehaviour
     }
     private void LateUpdate()
     {
-        if (player.transform.localScale.x < standartScale.x)
+        if (player.transform.localScale.x < standartScale.x) // возвращаем объекту стандартную форму
             player.transform.localScale = new Vector2(player.transform.localScale.x + 0.8f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.8f * Time.fixedDeltaTime);
     }
 
@@ -146,7 +146,6 @@ public class Player_Controller : MonoBehaviour
             jumpReady = false;
             ClearArrow(); //не рисуем стрелку
             Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.black);
-            //return false; //не даем возможность прыгнуть
         }
         else
         {
@@ -183,23 +182,17 @@ public class Player_Controller : MonoBehaviour
         arrowTail.SetPosition(1, (Vector2)touchedWorldPoint); //конечная точка к касанию
         arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
         arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.25f + force*0.5f,0.25f,0.5f), Mathf.Clamp(0.4f + force*0.5f, 0.25f, 0.5f)); // обновляем размер стрелки
-
-        //какая-то магия.
-        float angle = Mathf.Atan2(pushForceDirection.y, pushForceDirection.x) * Mathf.Rad2Deg; // фиг знает что
-        arrowHead.transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward); // поворот стрелки 
+        // поварачиваем в сторону направления
+        Game_Manager.SetAngle(pushForceDirection.normalized, arrowHead.transform); 
         //Важно что бы частицы не были привязаны к трансформу игрока, иначе просчет поворота работать не будет.
-        jumpEffect.transform.localRotation = Quaternion.AngleAxis(angle+90, Vector3.forward); //поворот системы частиц.  
+        Game_Manager.SetAngle(pushForceDirection.normalized, jumpEffect.transform);
 
     }
-    
+    /// <summary>
+    /// обнулить прыжки
+    /// </summary>
     public void ResetJumps()
     {
         jumpCount = maxJumps;
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.tag == "Simple Wall")
-            Debug.LogWarning("Respawn is Necessary");
     }
 }

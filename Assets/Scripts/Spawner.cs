@@ -16,7 +16,6 @@ public class Spawner : MonoBehaviour
     {
         int randomIndex = Random.Range(0, spawnPoints.Length);
             float rotate = Random.Range(0, 180);
-            Debug.Log(rotate);
             Instantiate(block, spawnPoints[randomIndex].position, Quaternion.Euler(0f, 0f, rotate));
     }
 

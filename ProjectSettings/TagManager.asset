@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - Simple Wall
+  - Particle System
   layers:
   - Default
   - TransparentFX
