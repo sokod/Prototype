@@ -12,7 +12,7 @@ public class Player_Controller : MonoBehaviour
     private Vector2 touchedWorldPoint; //точка касания относительно камеры
     private Ray2D rayToTouchedPoint; // луч от центра объекта к точке касания
     private Touch touch; //касание
-    private float maxStretchSqr,force; //макс натяжение в квадрате, сила толчка.
+    private float maxStretchSqr,force; //макс натяжение в квадрате; сила толчка.
     private GameObject player; // главный объект игрока
     private bool jumpReady; //натяжение достаточное для прыжка?
     private int jumpCount;// параметр, отвечающий за возможность игрока совершать прыжок
@@ -23,7 +23,6 @@ public class Player_Controller : MonoBehaviour
     private LineRenderer arrowTail; //linerenderer стрелки
     private SpriteRenderer arrowHeadSprite;
     public GameObject arrowHead;
-
 
     /// <summary>
     /// ищем нужные компоненты на сцене
@@ -78,11 +77,13 @@ public class Player_Controller : MonoBehaviour
         player_rb.velocity = Vector2.zero; //обнуляем перемещение игрока
         player_rb.inertia = 0f;
         player_rb.angularVelocity = 0f;
-        player_rb.AddForce(pushForceDirection.normalized * force * jumpForce, ForceMode2D.Force); // толкаем в направлении нажатия с силой * multiplayer
+        player_rb.AddForce(pushForceDirection.normalized * (100 + force * jumpForce), ForceMode2D.Force); // толкаем в направлении нажатия с силой * jumpForce
         jumpReady = false;
         jumpCount--;
         jumpEffect.Play(); // включаем выброс частиц
         player.transform.localScale *= 0.7f;// уменшаем героя
+        ParticleSystem.MainModule main = jumpEffect.main;
+        main.startSpeedMultiplier = force*3;
     }
 
     /// <summary>
@@ -155,6 +156,7 @@ public class Player_Controller : MonoBehaviour
             UpdateArrow(force); //обновляем стрелку
         }
         arrowHead.transform.position = touchedWorldPoint; // ставим стрелку в нажатую точку
+        jumpEffect.transform.position = player.transform.position; // ставим частицы на игрока
     }
 
     /// <summary>
@@ -172,20 +174,22 @@ public class Player_Controller : MonoBehaviour
     {
         Gradient gradient = new Gradient();
         gradient.SetKeys( //обновляем цвет стрелки, чем больше сила - тем ярче цвет.
-                new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(new Color(1f, 1f-force, 1f-force, 1f), 1.0f) },
-                new GradientAlphaKey[] { new GradientAlphaKey(0f, 0.0f), new GradientAlphaKey(1f, 1.0f) }
+                new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(new Color(1f, 1f-force*0.6f, 1f-force*0.6f, 1f), 0.6f) },
+                new GradientAlphaKey[] { new GradientAlphaKey(0f, 0.3f), new GradientAlphaKey(1f, 1.0f) }
                 );
 
         arrowTail.colorGradient = gradient; //устанавливаем новый цвет
         arrowTail.SetPosition(0, (Vector2)player.transform.position); //начальная точка от объекта игрока
         arrowTail.SetPosition(1, (Vector2)touchedWorldPoint); //конечная точка к касанию
-        arrowHeadSprite.color= new Color(1f, 1f - force, 1f - force, 1f); // обновляем цвет конца стрелки
-        arrowHead.transform.localScale = new Vector2(Mathf.Clamp(1.35f + force,1.35f,2f), Mathf.Clamp(1.35f + force, 1.35f, 2f)); // обновляем размер стрелки
+        arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
+        arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.25f + force*0.5f,0.25f,0.5f), Mathf.Clamp(0.4f + force*0.5f, 0.25f, 0.5f)); // обновляем размер стрелки
 
         //какая-то магия.
         float angle = Mathf.Atan2(pushForceDirection.y, pushForceDirection.x) * Mathf.Rad2Deg; // фиг знает что
         arrowHead.transform.rotation = Quaternion.AngleAxis(angle - 90, Vector3.forward); // поворот стрелки 
-        
+        //Важно что бы частицы не были привязаны к трансформу игрока, иначе просчет поворота работать не будет.
+        jumpEffect.transform.localRotation = Quaternion.AngleAxis(angle+90, Vector3.forward); //поворот системы частиц.  
+
     }
     
     public void ResetJumps()
