@@ -141,7 +141,7 @@ public class Player_Controller : MonoBehaviour
             touchedWorldPoint = rayToTouchedPoint.GetPoint(maxStretch); //Перезаписываем точку касания в точку по лучу на максимально допустимую дистанцию
         }
 
-        if (pushForceDirection.sqrMagnitude <= 0.3) // если натяжение слишком мало
+        if (pushForceDirection.sqrMagnitude <= 0.3 || pushForceDirection.sqrMagnitude>=30) // если натяжение слишком мало или большое
         {
             jumpReady = false;
             ClearArrow(); //не рисуем стрелку
@@ -195,5 +195,11 @@ public class Player_Controller : MonoBehaviour
     public void ResetJumps()
     {
         jumpCount = maxJumps;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Simple Wall")
+            Debug.LogWarning("Respawn is Necessary");
     }
 }

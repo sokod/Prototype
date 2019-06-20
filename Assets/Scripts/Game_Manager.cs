@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class Game_Manager : MonoBehaviour
 {
+    public GameObject deathFloor;
+    public float speed;
     private static float factor;
     private static bool slowMotionEnabled=false;
 
@@ -21,5 +25,9 @@ public class Game_Manager : MonoBehaviour
             factor = 0f;
             slowMotionEnabled = false;
         }
+    }
+    private void LateUpdate()
+    {
+        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* speed; // плавно перемещаем тригер конца вверх со скоростью speed
     }
 }

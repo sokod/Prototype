@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2637587118846443245}
   - component: {fileID: 2637587118846443246}
   - component: {fileID: 2637587118846443244}
+  - component: {fileID: -434083695967244595}
   m_Layer: 0
   m_Name: Block
   m_TagString: Simple Wall
@@ -68,7 +69,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 748133219
-  m_SortingLayer: -2
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 7378884f187808b4a9224470c22b2a9e, type: 3}
   m_Color: {r: 0.64000636, g: 0.9245283, b: 0.5276789, a: 1}
@@ -128,3 +129,15 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-434083695967244595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2637587118846443232}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a0e126d1ec302d44945edb8ef2d90e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

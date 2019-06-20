@@ -11,13 +11,21 @@ public class Spawner : MonoBehaviour
     {
         Spawn();
     }
+
     void Spawn()
     {
         int randomIndex = Random.Range(0, spawnPoints.Length);
-        for (int i = 0; i < randomIndex; i++)
+            float rotate = Random.Range(0, 180);
+            Debug.Log(rotate);
+            Instantiate(block, spawnPoints[randomIndex].position, Quaternion.Euler(0f, 0f, rotate));
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "MainCamera")
         {
-            float rotate = Random.Range(-90, 90);
-            Instantiate(block, spawnPoints[i].position, Quaternion.Euler(0f, 0f, rotate));
+            transform.position += Vector3.up*5f;
+            Spawn();
         }
     }
 }
