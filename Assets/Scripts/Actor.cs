@@ -7,8 +7,12 @@ public class Actor : MonoBehaviour
 {
     private Player_Controller controller;
     private SpriteRenderer sprite;
+
+    
     public GameObject deathFloor;
+    
     public ParticleSystem collisionParticle;
+
     private Rigidbody2D player_rb;
 
     private void Awake()

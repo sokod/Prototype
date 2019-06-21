@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player_Controller : MonoBehaviour
 {
+    
     public ParticleSystem jumpEffect;
     [Space(15)]
     public float maxStretch, jumpForce; // регулировка дистанции отдягивания, силы прыжка
@@ -22,6 +23,7 @@ public class Player_Controller : MonoBehaviour
 
     private LineRenderer arrowTail; //linerenderer стрелки
     private SpriteRenderer arrowHeadSprite;
+    
     public GameObject arrowHead;
 
     /// <summary>
@@ -66,7 +68,7 @@ public class Player_Controller : MonoBehaviour
     private void LateUpdate()
     {
         if (player.transform.localScale.x < standartScale.x) // возвращаем объекту стандартную форму
-            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.8f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.8f * Time.fixedDeltaTime);
+            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.5f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.5f * Time.fixedDeltaTime);
     }
 
     /// <summary>
@@ -92,10 +94,6 @@ public class Player_Controller : MonoBehaviour
     /// <param name="touch">касание</param>
     private void Control(Touch touch)
     {
-        //смотрим на фазы касания
-        if (touch.phase == TouchPhase.Began && CanJump())
-            Game_Manager.StartSlowMotion(10);
-
         switch (touch.phase)
         {
             case TouchPhase.Began: //при регистрации касания замедляем время
@@ -133,6 +131,7 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     private void Dragging()
     {
+        Game_Manager.StartSlowMotion(10);
         touchedWorldPoint = (Vector2)Camera.main.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
         pushForceDirection = touchedWorldPoint - (Vector2)player.transform.position; //расчитываем вектор натяжения
         if (pushForceDirection.sqrMagnitude > maxStretchSqr) // если натяжение больше чем максимально допустимое
@@ -183,7 +182,10 @@ public class Player_Controller : MonoBehaviour
         arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
         arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.25f + force*0.5f,0.25f,0.5f), Mathf.Clamp(0.4f + force*0.5f, 0.25f, 0.5f)); // обновляем размер стрелки
         // поварачиваем в сторону направления
-        Game_Manager.SetAngle(pushForceDirection.normalized, arrowHead.transform); 
+        Game_Manager.SetAngle(pushForceDirection.normalized, arrowHead.transform);
+
+        // arrowHead.transform.up = (player.transform.position - arrowHead.transform.position); - Дешевая альтернатива расчету угла через Atan.
+
         //Важно что бы частицы не были привязаны к трансформу игрока, иначе просчет поворота работать не будет.
         Game_Manager.SetAngle(pushForceDirection.normalized, jumpEffect.transform);
 

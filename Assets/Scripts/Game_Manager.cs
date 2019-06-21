@@ -4,19 +4,27 @@ using UnityEngine;
 
 public class Game_Manager : MonoBehaviour
 {
-    public GameObject deathFloor;
+    private GameObject deathFloor;
     public GameObject player;
-    public float speed;
+    public float floorSpeed;
+
     private static float factor;
     private static bool slowMotionEnabled=false;
     private float distanceToActor;
 
+    private void Awake()
+    {
+        deathFloor = GameObject.FindGameObjectWithTag("Finish");
+    }
     public static void StartSlowMotion(float slowDownFactor)
     {
-        factor += slowDownFactor;
-        Time.timeScale = 1f/slowDownFactor;
-        Time.fixedDeltaTime /= slowDownFactor;
-        slowMotionEnabled = true;
+        if (!slowMotionEnabled)
+        {
+            factor = slowDownFactor;
+            Time.timeScale = 1f / slowDownFactor;
+            Time.fixedDeltaTime /= slowDownFactor;
+            slowMotionEnabled = true;
+        }
     }
     public static void StopSlowMotion()
     {
@@ -69,10 +77,10 @@ public class Game_Manager : MonoBehaviour
     private void FixedUpdate()
     {
         float localSpeed;
-        if (distanceToActor > 50)
-            localSpeed = 2;
-        else localSpeed = speed;
-        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* localSpeed; // плавно перемещаем тригер конца вверх со скоростью speed || експерементально
+        if (distanceToActor > 90)
+            localSpeed = 10;
+        else localSpeed = floorSpeed;
+        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* localSpeed; // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
     }
 
 }
