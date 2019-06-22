@@ -106,7 +106,7 @@ public class Player_Controller : MonoBehaviour
             case TouchPhase.Canceled:
             case TouchPhase.Ended:
                 ClearArrow(); //убираем стрелку
-                Game_Manager.StopSlowMotion();//возвращаемся к нормальному времени
+                Game_Manager.Instance.StopSlowMotion();//возвращаемся к нормальному времени
                 break;
             default:
                 break;
@@ -131,7 +131,7 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     private void Dragging()
     {
-        Game_Manager.StartSlowMotion(10);
+        Game_Manager.Instance.StartSlowMotion(10);
         touchedWorldPoint = (Vector2)Camera.main.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
         pushForceDirection = touchedWorldPoint - (Vector2)player.transform.position; //расчитываем вектор натяжения
         if (pushForceDirection.sqrMagnitude > maxStretchSqr) // если натяжение больше чем максимально допустимое
@@ -140,11 +140,12 @@ public class Player_Controller : MonoBehaviour
             touchedWorldPoint = rayToTouchedPoint.GetPoint(maxStretch); //Перезаписываем точку касания в точку по лучу на максимально допустимую дистанцию
         }
 
-        if (pushForceDirection.sqrMagnitude <= 0.3 || pushForceDirection.sqrMagnitude>=30) // если натяжение слишком мало или большое
+        if (pushForceDirection.sqrMagnitude <= 0.3 || pushForceDirection.sqrMagnitude>=20) // если натяжение слишком мало или большое
         {
             jumpReady = false;
             ClearArrow(); //не рисуем стрелку
             Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.black);
+
         }
         else
         {
@@ -182,12 +183,12 @@ public class Player_Controller : MonoBehaviour
         arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
         arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.25f + force*0.5f,0.25f,0.5f), Mathf.Clamp(0.4f + force*0.5f, 0.25f, 0.5f)); // обновляем размер стрелки
         // поварачиваем в сторону направления
-        Game_Manager.SetAngle(pushForceDirection.normalized, arrowHead.transform);
+        Game_Manager.Instance.SetAngle(pushForceDirection.normalized, arrowHead.transform);
 
         // arrowHead.transform.up = (player.transform.position - arrowHead.transform.position); - Дешевая альтернатива расчету угла через Atan.
 
         //Важно что бы частицы не были привязаны к трансформу игрока, иначе просчет поворота работать не будет.
-        Game_Manager.SetAngle(pushForceDirection.normalized, jumpEffect.transform);
+        Game_Manager.Instance.SetAngle(pushForceDirection.normalized, jumpEffect.transform);
 
     }
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Game_Manager : MonoBehaviour
@@ -7,16 +8,19 @@ public class Game_Manager : MonoBehaviour
     private GameObject deathFloor;
     public GameObject player;
     public float floorSpeed;
+    public float gameScore;
+    public static Game_Manager Instance;
 
-    private static float factor;
-    private static bool slowMotionEnabled=false;
+    private float factor;
+    private bool slowMotionEnabled=false;
     private float distanceToActor;
 
     private void Awake()
     {
+        Instance = this;
         deathFloor = GameObject.FindGameObjectWithTag("Finish");
     }
-    public static void StartSlowMotion(float slowDownFactor)
+    public void StartSlowMotion(float slowDownFactor)
     {
         if (!slowMotionEnabled)
         {
@@ -26,7 +30,7 @@ public class Game_Manager : MonoBehaviour
             slowMotionEnabled = true;
         }
     }
-    public static void StopSlowMotion()
+    public void StopSlowMotion()
     {
         if (slowMotionEnabled)
         {
@@ -42,7 +46,7 @@ public class Game_Manager : MonoBehaviour
     /// </summary>
     /// <param name="directionNorm"></param>
     /// <returns></returns>
-    public static float GetAngle(Vector2 directionNorm)
+    public float GetAngle(Vector2 directionNorm)
     {
         return Mathf.Atan2(directionNorm.y, directionNorm.x) * Mathf.Rad2Deg;
     }
@@ -52,7 +56,7 @@ public class Game_Manager : MonoBehaviour
     /// <param name="start"></param>
     /// <param name="target"></param>
     /// <returns></returns>
-    public static float GetAngle(Vector3 start, Vector3 target)
+    public float GetAngle(Vector3 start, Vector3 target)
     {
         Vector3 direction = start - target;
         direction.Normalize();
@@ -63,7 +67,7 @@ public class Game_Manager : MonoBehaviour
     /// </summary>
     /// <param name="directionNorm"></param>
     /// <param name="transform"></param>
-    public static void SetAngle(Vector2 directionNorm,Transform transform)
+    public void SetAngle(Vector2 directionNorm,Transform transform)
     {
         transform.rotation = Quaternion.AngleAxis(GetAngle(directionNorm) - 90, Vector3.forward);
     }
@@ -72,6 +76,7 @@ public class Game_Manager : MonoBehaviour
     private void Update()
     {
         distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude; //дистанция лавы к игроку || експерементально
+        gameScore = player.transform.localPosition.y*2;
     }
 
     private void FixedUpdate()
@@ -81,6 +86,23 @@ public class Game_Manager : MonoBehaviour
             localSpeed = 10;
         else localSpeed = floorSpeed;
         deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* localSpeed; // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //рестарт
+    }
+
+    public void Pause()
+    {
+        if (Time.timeScale < 1)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Time.timeScale = 0;
+        }
     }
 
 }

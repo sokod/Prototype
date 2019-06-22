@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Actor : MonoBehaviour
 {
@@ -43,14 +42,26 @@ public class Actor : MonoBehaviour
         if (collision.gameObject.tag == "Simple Wall")
         {
             controller.ResetJumps();
-            if (player_rb.velocity.magnitude > 3) //просчитываем примерную силу столкновения
-            {
-                collisionParticle.transform.position = collision.collider.ClosestPoint(transform.position); //узнаем примерную точку столкновения
-                Vector3 direction = transform.position - collision.transform.position; //узнаем вектор направления к объекту колизии
-                direction.Normalize();
-                Game_Manager.SetAngle(direction, collisionParticle.transform); // поворачиваем систему частиц к направлению колизии
-                collisionParticle.Play();
-            }
+            SetCollisionParticles(collision);
+        }
+        if (collision.gameObject.tag == "One Side Wall" && collision.relativeVelocity.y>=0f)
+        {
+            controller.ResetJumps();
+            SetCollisionParticles(collision);
+        }
+
+    }
+
+    private void SetCollisionParticles(Collision2D collision)
+    {
+        if (player_rb.velocity.magnitude > 3) //просчитываем примерную силу столкновения
+        {
+            //collisionParticle.transform.position = collision.collider.ClosestPoint(transform.position); //узнаем примерную точку столкновения
+            collisionParticle.transform.position = collision.contacts[0].point; //узнаем примерную точку столкновения
+            Vector3 direction = transform.position - collision.transform.position; //узнаем вектор направления к объекту колизии
+            direction.Normalize();
+            Game_Manager.Instance.SetAngle(direction, collisionParticle.transform); // поворачиваем систему частиц к направлению колизии
+            collisionParticle.Play();
         }
     }
 
@@ -58,7 +69,11 @@ public class Actor : MonoBehaviour
     {
         if (collision.gameObject.tag == "Finish")
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //рестарт
+            Game_Manager.Instance.Restart();
+        }
+        if (collision.gameObject.tag == "Simple Wall")
+        {
+            controller.ResetJumps();
         }
     }
 }

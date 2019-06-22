@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Simple Wall
   - Particle System
+  - One Side Wall
   layers:
   - Default
   - TransparentFX
