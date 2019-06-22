@@ -25,10 +25,10 @@ public class UI_Update : MonoBehaviour
 
     void ShowScore(Text text)
     {
-        if (Game_Manager.Instance.gameScore > highScore)
-        {
-            highScore = Game_Manager.Instance.gameScore;
-            text.text = string.Format($"Score: {highScore:f0}");
-        }
+            if (Game_Manager.Instance.gameScore > highScore)
+            {
+                highScore = Game_Manager.Instance.gameScore;
+                text.text = string.Format($"Score: {highScore:f0}");
+            }
     }
 }

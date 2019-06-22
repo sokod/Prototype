@@ -38,6 +38,7 @@ public class Spawner : MonoBehaviour
     {
         GameObject spawnedWall;
             spawnedWall = Instantiate(spawnObject, spawnPoints[index].position, Quaternion.Euler(0f, 0f, rotate));
+        if (spawnObject.GetComponent<CircleCollider2D>()==null)
             spawnedWall.transform.localScale = new Vector3(Random.Range(4, 10), spawnedWall.transform.localScale.y, spawnedWall.transform.localScale.z);
             //spawnedWall.transform.parent = spawnPoints[index].transform;
         return spawnedWall;

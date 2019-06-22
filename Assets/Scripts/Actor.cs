@@ -58,9 +58,21 @@ public class Actor : MonoBehaviour
         {
             //collisionParticle.transform.position = collision.collider.ClosestPoint(transform.position); //узнаем примерную точку столкновения
             collisionParticle.transform.position = collision.contacts[0].point; //узнаем примерную точку столкновения
-            Vector3 direction = transform.position - collision.transform.position; //узнаем вектор направления к объекту колизии
-            direction.Normalize();
-            Game_Manager.Instance.SetAngle(direction, collisionParticle.transform); // поворачиваем систему частиц к направлению колизии
+            //Vector3 direction = transform.position - collision.transform.position; //узнаем вектор направления к объекту колизии
+            //direction.Normalize();
+            //Game_Manager.Instance.SetAngle(direction, collisionParticle.transform); // поворачиваем систему частиц к направлению колизии
+
+            SpriteRenderer collisionObject = collision.collider.GetComponent<SpriteRenderer>();
+
+            // установка цвета градиента в цикле жизни частицы
+            var col = collisionParticle.colorOverLifetime;
+            Gradient gradient = new Gradient();
+            gradient.SetKeys( //обновляем цвет стрелки, чем больше сила - тем ярче цвет.
+                    new GradientColorKey[] { new GradientColorKey(collisionObject.color, 0f), new GradientColorKey(collisionObject.color, 1f) },
+                    new GradientAlphaKey[] { new GradientAlphaKey(1f, 0f), new GradientAlphaKey(0f, 1f) }
+                    );
+            col.color = gradient;
+     
             collisionParticle.Play();
         }
     }

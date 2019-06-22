@@ -82,10 +82,10 @@ public class Game_Manager : MonoBehaviour
     private void FixedUpdate()
     {
         float localSpeed;
-        if (distanceToActor > 90)
+        if (distanceToActor > 150)
             localSpeed = 10;
         else localSpeed = floorSpeed;
-        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* localSpeed; // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
+        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* (localSpeed + Time.timeSinceLevelLoad/20f); // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
     }
 
     public void Restart()
@@ -95,6 +95,7 @@ public class Game_Manager : MonoBehaviour
 
     public void Pause()
     {
+        StopSlowMotion();
         if (Time.timeScale < 1)
         {
             Time.timeScale = 1;

@@ -79,7 +79,7 @@ public class Player_Controller : MonoBehaviour
         player_rb.velocity = Vector2.zero; //обнуляем перемещение игрока
         player_rb.inertia = 0f;
         player_rb.angularVelocity = 0f;
-        player_rb.AddForce(pushForceDirection.normalized * (100 + force * jumpForce), ForceMode2D.Force); // толкаем в направлении нажатия с силой * jumpForce
+        player_rb.AddForce(pushForceDirection.normalized * (150 + force * jumpForce), ForceMode2D.Force); // толкаем в направлении нажатия с силой * jumpForce
         jumpReady = false;
         jumpCount--;
         jumpEffect.Play(); // включаем выброс частиц
@@ -140,7 +140,7 @@ public class Player_Controller : MonoBehaviour
             touchedWorldPoint = rayToTouchedPoint.GetPoint(maxStretch); //Перезаписываем точку касания в точку по лучу на максимально допустимую дистанцию
         }
 
-        if (pushForceDirection.sqrMagnitude <= 0.3 || pushForceDirection.sqrMagnitude>=20) // если натяжение слишком мало или большое
+        if (pushForceDirection.sqrMagnitude <= 0.3) // если натяжение слишком мало или большое
         {
             jumpReady = false;
             ClearArrow(); //не рисуем стрелку
