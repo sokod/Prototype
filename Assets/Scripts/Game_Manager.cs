@@ -10,6 +10,7 @@ public class Game_Manager : MonoBehaviour
     public float floorSpeed;
     public float gameScore;
     public static Game_Manager Instance;
+    public float penalty;
 
     private float factor;
     private bool slowMotionEnabled=false;
@@ -76,13 +77,14 @@ public class Game_Manager : MonoBehaviour
     private void Update()
     {
         distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude; //дистанция лавы к игроку || експерементально
-        gameScore = player.transform.localPosition.y*2;
+        if(Time.frameCount%3==0)
+            gameScore = player.transform.localPosition.y;
     }
 
     private void FixedUpdate()
     {
         float localSpeed;
-        if (distanceToActor > 150)
+        if (distanceToActor > 300)
             localSpeed = 10;
         else localSpeed = floorSpeed;
         deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* (localSpeed + Time.timeSinceLevelLoad/20f); // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально

@@ -25,9 +25,10 @@ public class Block_Controller : MonoBehaviour
         {
             Destroy(gameObject);
         }
-        if (collision.gameObject.tag == "Portal")
+        if (collision.gameObject.tag == "Finish" && gameObject.tag=="Portal")
         {
-            Game_Manager.Instance.Restart();
+            Game_Manager.Instance.penalty += 10;
+            Destroy(gameObject);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
