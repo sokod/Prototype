@@ -16,20 +16,18 @@ public class Actor : MonoBehaviour
 
     private void Awake()
     {
-        controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Player_Controller>();
+        controller = GetComponent<Player_Controller>();
+        //controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Player_Controller>();
         sprite = GetComponent<SpriteRenderer>();
         player_rb = GetComponent<Rigidbody2D>();
 
-    }
-    private void FixedUpdate()
-    {
     }
 
     private void Update()
     {
         if (!controller.CanJump())
         {
-            sprite.color = new Color(1f, 0.92f, 0.6f, 1f);
+            sprite.color = new Color(1f, 0.92f, 0.7f, 1f);
         }
         else
         {

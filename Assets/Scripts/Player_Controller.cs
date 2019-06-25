@@ -23,7 +23,8 @@ public class Player_Controller : MonoBehaviour
 
     private LineRenderer arrowTail; //linerenderer стрелки
     private SpriteRenderer arrowHeadSprite;
-    
+    private Camera MainCamera;
+
     public GameObject arrowHead;
 
     /// <summary>
@@ -31,10 +32,11 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = this.gameObject;
         player_rb = player.GetComponent<Rigidbody2D>();
         arrowTail = player.GetComponent<LineRenderer>();
         arrowHeadSprite = arrowHead.GetComponent<SpriteRenderer>();
+        MainCamera = Camera.main;
     }
 
     // Start is called before the first frame update
@@ -132,7 +134,7 @@ public class Player_Controller : MonoBehaviour
     private void Dragging()
     {
         Game_Manager.Instance.StartSlowMotion(10);
-        touchedWorldPoint = (Vector2)Camera.main.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
+        touchedWorldPoint = (Vector2)MainCamera.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
         pushForceDirection = touchedWorldPoint - (Vector2)player.transform.position; //расчитываем вектор натяжения
         if (pushForceDirection.sqrMagnitude > maxStretchSqr) // если натяжение больше чем максимально допустимое
         {
