@@ -10,7 +10,6 @@ public class Game_Manager : MonoBehaviour
     public float floorSpeed;
     public float gameScore;
     public static Game_Manager Instance;
-    public float penalty;
 
     private float factor;
     private bool slowMotionEnabled=false;
@@ -77,8 +76,11 @@ public class Game_Manager : MonoBehaviour
     private void Update()
     {
         distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude; //дистанция лавы к игроку || експерементально
-        if(Time.frameCount%3==0)
+        if (Time.frameCount % 5 == 0)
+        {
             gameScore = player.transform.localPosition.y;
+            UI_Update.Instance.UpdateScore();
+        }
     }
 
     private void FixedUpdate()
@@ -92,6 +94,7 @@ public class Game_Manager : MonoBehaviour
 
     public void Restart()
     {
+        StopSlowMotion();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //рестарт
     }
 

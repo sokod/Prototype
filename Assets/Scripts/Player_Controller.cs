@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class Player_Controller : MonoBehaviour
 {
@@ -50,12 +51,11 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
         if (Input.touchCount > 0)
         {
             //если регистрируем касание, то записываем информацию о нем в touch
             touch = Input.GetTouch(0);
-            // инициируем перемещение 
+            // инициируем перемещение
             Control(touch);
         }
     }
@@ -96,6 +96,10 @@ public class Player_Controller : MonoBehaviour
     /// <param name="touch">касание</param>
     private void Control(Touch touch)
     {
+        if (touch.phase == TouchPhase.Began)
+        {
+            Game_Manager.Instance.StartSlowMotion(10);
+        }
         switch (touch.phase)
         {
             case TouchPhase.Began: //при регистрации касания замедляем время
@@ -133,7 +137,7 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     private void Dragging()
     {
-        Game_Manager.Instance.StartSlowMotion(10);
+        
         touchedWorldPoint = (Vector2)MainCamera.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
         pushForceDirection = touchedWorldPoint - (Vector2)player.transform.position; //расчитываем вектор натяжения
         if (pushForceDirection.sqrMagnitude > maxStretchSqr) // если натяжение больше чем максимально допустимое
@@ -183,7 +187,7 @@ public class Player_Controller : MonoBehaviour
         arrowTail.SetPosition(0, (Vector2)player.transform.position); //начальная точка от объекта игрока
         arrowTail.SetPosition(1, (Vector2)touchedWorldPoint); //конечная точка к касанию
         arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
-        arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.25f + force*0.5f,0.25f,0.5f), Mathf.Clamp(0.4f + force*0.5f, 0.25f, 0.5f)); // обновляем размер стрелки
+        arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.15f + force*0.35f,0.15f,0.3f), Mathf.Clamp(0.15f + force*0.35f, 0.15f, 0.3f)); // обновляем размер стрелки
         // поварачиваем в сторону направления
         Game_Manager.Instance.SetAngle(pushForceDirection.normalized, arrowHead.transform);
 

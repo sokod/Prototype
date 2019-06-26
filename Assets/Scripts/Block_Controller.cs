@@ -7,6 +7,8 @@ public class Block_Controller : MonoBehaviour
     private SpriteRenderer sprite;
     private void Awake()
     {
+        if (gameObject.tag == "Portal")
+            StartCoroutine(Fade());
         sprite = GetComponent<SpriteRenderer>();
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -27,7 +29,14 @@ public class Block_Controller : MonoBehaviour
         }
         if (collision.gameObject.tag == "Finish" && gameObject.tag=="Portal")
         {
-            Game_Manager.Instance.penalty += 10;
+            UI_Update.Instance.penalty += 10;
+            UI_Update.Instance.forceUpdate = true;
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.tag == "Player" && gameObject.tag=="Portal")
+        {
+            UI_Update.Instance.penalty -= 5;
+            UI_Update.Instance.forceUpdate = true;
             Destroy(gameObject);
         }
     }
@@ -38,5 +47,20 @@ public class Block_Controller : MonoBehaviour
         {
             Destroy(gameObject);
         }
+    }
+    IEnumerator Fade()
+    {
+        SpriteRenderer glow = gameObject.GetComponentsInChildren<SpriteRenderer>()[1];
+        while (true)
+        {
+            Debug.Log(glow.color);
+            if (glow.color.a > 0.45f) glow.color -= new Color(0f,0f,0f,0.3f);
+            glow.color += new Color(0f,0f,0f,0.05f);
+            yield return new WaitForSeconds(0.2f);
+        }
+    }
+    private void OnDestroy()
+    {
+        StopCoroutine(Fade());
     }
 }
