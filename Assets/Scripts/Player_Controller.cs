@@ -51,13 +51,17 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.touchCount > 0)
+        if (!UI_Update.Instance.DeadScreen.activeInHierarchy)
         {
-            //если регистрируем касание, то записываем информацию о нем в touch
-            touch = Input.GetTouch(0);
-            // инициируем перемещение
-            Control(touch);
+            if (Input.touchCount > 0)
+            {
+                //если регистрируем касание, то записываем информацию о нем в touch
+                touch = Input.GetTouch(0);
+                // инициируем перемещение
+                Control(touch);
+            }
         }
+        else ClearArrow();
     }
     void FixedUpdate()
     {

@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Game_Manager : MonoBehaviour
@@ -79,7 +78,7 @@ public class Game_Manager : MonoBehaviour
         if (Time.frameCount % 5 == 0)
         {
             gameScore = player.transform.localPosition.y;
-            UI_Update.Instance.UpdateScore();
+            UI_Update.Instance.ShowScore();
         }
     }
 
@@ -91,24 +90,4 @@ public class Game_Manager : MonoBehaviour
         else localSpeed = floorSpeed;
         deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* (localSpeed + Time.timeSinceLevelLoad/20f); // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
     }
-
-    public void Restart()
-    {
-        StopSlowMotion();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //рестарт
-    }
-
-    public void Pause()
-    {
-        StopSlowMotion();
-        if (Time.timeScale < 1)
-        {
-            Time.timeScale = 1;
-        }
-        else
-        {
-            Time.timeScale = 0;
-        }
-    }
-
 }

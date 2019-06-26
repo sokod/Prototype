@@ -79,11 +79,22 @@ public class Actor : MonoBehaviour
     {
         if (collision.gameObject.tag == "Finish")
         {
-            Game_Manager.Instance.Restart();
+            UI_Update.Instance.DeadScreen.SetActive(true);
+            UI_Update.Instance.UpdateHighScore();
+            UI_Update.Instance.HighestScore.text = string.Format($"Highest score: {PlayerPrefs.GetFloat("HighScore", 0):f0}");
+            Game_Manager.Instance.StartSlowMotion(20);
+            StartCoroutine(GameOver());
         }
         if (collision.gameObject.tag == "Simple Wall")
         {
             controller.ResetJumps();
         }
     }
+
+    IEnumerator GameOver()
+    {
+        yield return new WaitForSecondsRealtime(10f);
+        UI_Update.Instance.Pause();
+    }
+
 }

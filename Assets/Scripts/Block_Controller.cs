@@ -8,7 +8,7 @@ public class Block_Controller : MonoBehaviour
     private void Awake()
     {
         if (gameObject.tag == "Portal")
-            StartCoroutine(Fade());
+            StartCoroutine(Glow());
         sprite = GetComponent<SpriteRenderer>();
     }
     private void OnCollisionEnter2D(Collision2D collision)
@@ -23,22 +23,24 @@ public class Block_Controller : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" && gameObject.tag == "Portal")
         {
-            Destroy(gameObject);
+            UI_Update.Instance.penalty -= 5;
+            UI_Update.Instance.forceUpdate = true;
+            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+            StartCoroutine(Dissapear());
         }
+        else if (collision.gameObject.tag == "Player")
+            {
+                Destroy(gameObject);
+            }
         if (collision.gameObject.tag == "Finish" && gameObject.tag=="Portal")
         {
             UI_Update.Instance.penalty += 10;
             UI_Update.Instance.forceUpdate = true;
             Destroy(gameObject);
         }
-        if (collision.gameObject.tag == "Player" && gameObject.tag=="Portal")
-        {
-            UI_Update.Instance.penalty -= 5;
-            UI_Update.Instance.forceUpdate = true;
-            Destroy(gameObject);
-        }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -48,19 +50,32 @@ public class Block_Controller : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    IEnumerator Fade()
+    IEnumerator Glow()
     {
         SpriteRenderer glow = gameObject.GetComponentsInChildren<SpriteRenderer>()[1];
         while (true)
         {
-            Debug.Log(glow.color);
-            if (glow.color.a > 0.45f) glow.color -= new Color(0f,0f,0f,0.3f);
-            glow.color += new Color(0f,0f,0f,0.05f);
+            if (glow.color.a > 0.5f)
+            {
+                glow.color -= new Color(0f, 0f, 0f, 0.3f);
+            }
+            else glow.color += new Color(0f,0f,0f,0.05f);
             yield return new WaitForSeconds(0.2f);
         }
     }
+
+    IEnumerator Dissapear()
+    {
+        while (transform.localScale.x>0.1f)
+        {
+            transform.localScale -= new Vector3(0.1f, 0.1f, 0f);
+            yield return new WaitForSeconds(0.05f);
+        }
+        Destroy(gameObject);
+    }
+
     private void OnDestroy()
     {
-        StopCoroutine(Fade());
+        StopCoroutine(Glow());
     }
 }
