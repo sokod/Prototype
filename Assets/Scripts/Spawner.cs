@@ -14,7 +14,9 @@ public class Spawner : MonoBehaviour
     {
         Spawn();
     }
-
+    /// <summary>
+    /// спавн блоков
+    /// </summary>
     void Spawn()
     {
         int randomIndex = Random.Range(0, spawnPoints.Length);
@@ -33,7 +35,13 @@ public class Spawner : MonoBehaviour
             Create(randomIndex + 1, rotate, wall);
         }
     }
-
+    /// <summary>
+    /// instantiate объект 
+    /// </summary>
+    /// <param name="index">позиция</param>
+    /// <param name="rotate">наклон</param>
+    /// <param name="spawnObject">объект</param>
+    /// <returns></returns>
     GameObject Create(int index, float rotate,GameObject spawnObject)
     {
         GameObject spawnedWall;

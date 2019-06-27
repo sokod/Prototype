@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class Menu : MonoBehaviour
 {
+    public GameObject start_btn;
+    public GameObject customize_btn;
+    public GameObject customize_field;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,5 +26,15 @@ public class Menu : MonoBehaviour
     public void Quit()
     {
         Application.Quit();
+    }
+    public void OnCustomize()
+    {
+        if (!customize_field.activeInHierarchy)
+        customize_field.SetActive(true);
+        else customize_field.SetActive(false);
+
+    }
+    private void SetActiveMainMenu(bool active)
+    {
     }
 }

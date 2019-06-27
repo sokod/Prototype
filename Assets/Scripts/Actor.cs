@@ -5,10 +5,10 @@ using UnityEngine;
 public class Actor : MonoBehaviour
 {
     private Player_Controller controller;
-    private SpriteRenderer sprite;
+    //private SpriteRenderer sprite;
 
     
-    public GameObject deathFloor;
+    //public GameObject deathFloor;
     
     public ParticleSystem collisionParticle;
 
@@ -18,11 +18,14 @@ public class Actor : MonoBehaviour
     {
         controller = GetComponent<Player_Controller>();
         //controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Player_Controller>();
-        sprite = GetComponent<SpriteRenderer>();
+        //sprite = GetComponent<SpriteRenderer>();
         player_rb = GetComponent<Rigidbody2D>();
+        //
+        collisionParticle = GameObject.FindGameObjectsWithTag("Particle System")[1].GetComponent<ParticleSystem>();
 
     }
 
+    /*
     private void Update()
     {
         if (!controller.CanJump())
@@ -33,7 +36,7 @@ public class Actor : MonoBehaviour
         {
             sprite.color = Color.yellow;
         }
-    }
+    }*/
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -42,14 +45,17 @@ public class Actor : MonoBehaviour
             controller.ResetJumps();
             SetCollisionParticles(collision);
         }
-        if (collision.gameObject.tag == "One Side Wall" && collision.relativeVelocity.y>=0f)
+        if (collision.gameObject.tag == "One Side Wall" && collision.relativeVelocity.y>=0f) //если был выше во время столкновения
         {
             controller.ResetJumps();
             SetCollisionParticles(collision);
         }
 
     }
-
+    /// <summary>
+    /// настройка цвета колизии и включение эффекта.
+    /// </summary>
+    /// <param name="collision"></param>
     private void SetCollisionParticles(Collision2D collision)
     {
         if (player_rb.velocity.magnitude > 3) //просчитываем примерную силу столкновения
@@ -77,6 +83,7 @@ public class Actor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        //если столкнулись с лавой, включаем экран смерти, обновляем очки, начинаем замедление времени
         if (collision.gameObject.tag == "Finish")
         {
             UI_Update.Instance.DeadScreen.SetActive(true);
@@ -85,15 +92,18 @@ public class Actor : MonoBehaviour
             Game_Manager.Instance.StartSlowMotion(20);
             StartCoroutine(GameOver());
         }
-        if (collision.gameObject.tag == "Simple Wall")
+        if (collision.gameObject.tag == "Simple Wall") //желтый портал, эксперементально
         {
             controller.ResetJumps();
         }
     }
-
+    /// <summary>
+    /// пауза после 5 секунд
+    /// </summary>
+    /// <returns></returns>
     IEnumerator GameOver()
     {
-        yield return new WaitForSecondsRealtime(10f);
+        yield return new WaitForSecondsRealtime(5f);
         UI_Update.Instance.Pause();
     }
 

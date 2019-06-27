@@ -18,7 +18,15 @@ public class Game_Manager : MonoBehaviour
     {
         Instance = this;
         deathFloor = GameObject.FindGameObjectWithTag("Finish");
+        //
+        Game_Loader.Instance.SetScene();
+        player = GameObject.FindGameObjectsWithTag("Player")[1];
     }
+
+    /// <summary>
+    /// замедление времени
+    /// </summary>
+    /// <param name="slowDownFactor"> фактор замедления </param>
     public void StartSlowMotion(float slowDownFactor)
     {
         if (!slowMotionEnabled)
@@ -29,6 +37,9 @@ public class Game_Manager : MonoBehaviour
             slowMotionEnabled = true;
         }
     }
+    /// <summary>
+    /// сбросить замедление
+    /// </summary>
     public void StopSlowMotion()
     {
         if (slowMotionEnabled)
@@ -75,7 +86,7 @@ public class Game_Manager : MonoBehaviour
     private void Update()
     {
         distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude; //дистанция лавы к игроку || експерементально
-        if (Time.frameCount % 5 == 0)
+        if (Time.frameCount % 5 == 0) //каждые 5 кадров проверяем позицию игрока и обновляем очки
         {
             gameScore = player.transform.localPosition.y;
             UI_Update.Instance.ShowScore();

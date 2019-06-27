@@ -27,7 +27,7 @@ public class Player_Controller : MonoBehaviour
     private Camera MainCamera;
 
     public GameObject arrowHead;
-
+    private SpriteRenderer sprite;
     /// <summary>
     /// ищем нужные компоненты на сцене
     /// </summary>
@@ -36,8 +36,16 @@ public class Player_Controller : MonoBehaviour
         player = this.gameObject;
         player_rb = player.GetComponent<Rigidbody2D>();
         arrowTail = player.GetComponent<LineRenderer>();
+        //
+        arrowHead = GameObject.Find("ArrowHead(Clone)");
+        jumpEffect = GameObject.FindGameObjectsWithTag("Particle System")[0].GetComponent<ParticleSystem>();
+
         arrowHeadSprite = arrowHead.GetComponent<SpriteRenderer>();
         MainCamera = Camera.main;
+
+        MainCamera.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().Follow = gameObject.transform;
+
+        sprite = GetComponent<SpriteRenderer>();
     }
 
     // Start is called before the first frame update
@@ -51,7 +59,7 @@ public class Player_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!UI_Update.Instance.DeadScreen.activeInHierarchy)
+        if (!UI_Update.Instance.DeadScreen.activeInHierarchy) //только если не активно game over
         {
             if (Input.touchCount > 0)
             {
@@ -92,6 +100,9 @@ public class Player_Controller : MonoBehaviour
         player.transform.localScale *= 0.7f;// уменшаем героя
         ParticleSystem.MainModule main = jumpEffect.main;
         main.startSpeedMultiplier = force*3;
+
+        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r - 0.2f, sprite.color.g - 0.2f, sprite.color.b - 0.2f);
+
     }
 
     /// <summary>
@@ -206,6 +217,6 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     public void ResetJumps()
     {
-        jumpCount = maxJumps;
-    }
+        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r + 0.2f, sprite.color.g + 0.2f, sprite.color.b + 0.2f);
+        jumpCount = maxJumps;    }
 }
