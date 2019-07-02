@@ -21,8 +21,17 @@ public class UI_Update : MonoBehaviour
     private float highScore;
     private void Awake()
     {
-        Instance = this;
-            text = GetComponentInChildren<Text>();
+        if (Instance == null)
+        { // Экземпляр менеджера был найден
+            Instance = this; // Задаем ссылку на экземпляр объекта
+        }
+        else if (Instance != null)
+        { // Экземпляр объекта уже существует на сцене
+            Destroy(gameObject); // Удаляем объект
+            Debug.LogWarning("More than one instances");
+        }
+
+        text = GetComponentInChildren<Text>();
     }
     /// <summary>
     /// вывод очков на экран

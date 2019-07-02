@@ -70,7 +70,7 @@ public class Block_Controller : MonoBehaviour
         //меняем альфу пока принудительно не остановим корутин
         while (true)
         {
-            if (glow.color.a > 0.5f)
+            if (glow.color.a > 0.8f)
             {
                 glow.color -= new Color(0f, 0f, 0f, 0.3f);
             }

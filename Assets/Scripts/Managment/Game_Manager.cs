@@ -16,7 +16,15 @@ public class Game_Manager : MonoBehaviour
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+        { // Экземпляр менеджера был найден
+            Instance = this; // Задаем ссылку на экземпляр объекта
+        }
+        else if (Instance != null)
+        { // Экземпляр объекта уже существует на сцене
+            Destroy(gameObject); // Удаляем объект
+            Debug.LogWarning("More than one instances");
+        }
         deathFloor = GameObject.FindGameObjectWithTag("Finish");
         //
         Game_Loader.Instance.SetScene();
