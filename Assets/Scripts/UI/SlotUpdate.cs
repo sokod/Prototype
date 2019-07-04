@@ -70,7 +70,7 @@ public class SlotUpdate : MonoBehaviour
         if (gameObject.transform.parent.name != "Arrow_Holder")
             slot_image.color = slot_prefab.GetComponentInChildren<SpriteRenderer>().color;
         slot_image.enabled = true;
-        slot_button.onClick.AddListener(UpdateLoader);
+        slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
         HasObject = true;
         SetButton();
     }

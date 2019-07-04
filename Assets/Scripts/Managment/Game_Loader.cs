@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+
 public class Game_Loader : MonoBehaviour
 {
-    public GameObject player_body;
-    public GameObject jumpParticleEffect;
-    public GameObject collisionEffect;
-    public GameObject arrowHead;
-    public static Game_Loader Instance = null;
+    private GameObject player_body;
+    public GameObject jumpParticleEffect; // need solution
+    public GameObject collisionEffect; // need solution
+    private GameObject arrowHead;
+
+    public static Game_Loader Instance;
 
     public List<GameObject> bodyPrefabs = new List<GameObject>();
     public List<GameObject> jumpEffectsPrefabs = new List<GameObject>();
@@ -25,6 +27,7 @@ public class Game_Loader : MonoBehaviour
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("More than one instances");
         }
+        LoadBuild();
         DontDestroyOnLoad(gameObject);
     }
 
@@ -93,13 +96,36 @@ public class Game_Loader : MonoBehaviour
         else id = selectedObject.name;
         return id;
     }
-
-    void Check()
+    /// <summary>
+    /// Устанавливаем текущие элементы игрока на загруженные из PlayerPrefs. 
+    /// </summary>
+    void LoadBuild()
     {
-        //добавить запись у файл выбраных вариантов у PlayerPref название объекта
-        //после сравнивать с выбраным на данный момент и менять.
-        //потом найти объект по названию и установить вместо текущего.
+        string name = PlayerPrefs.GetString("PlayerBody","PlayerBody");
+        foreach (GameObject body in bodyPrefabs)
+        {
+            if (body.name == name)
+                player_body = body;
+        }
+        name = PlayerPrefs.GetString("ArrowHead","ArrowHead");
+        foreach(GameObject arrow in arrowHeadPrefabs)
+        {
+            if (arrow.name == name)
+                arrowHead = arrow;
+        }
     }
+
+    public void SaveCurrentBuild()
+    {
+        if (PlayerPrefs.GetString("PlayerBody") != player_body.name)
+            PlayerPrefs.SetString("PlayerBody", player_body.name);
+
+        if (PlayerPrefs.GetString("ArrowHead") != arrowHead.name)
+            PlayerPrefs.SetString("ArrowHead", arrowHead.name);
+
+        Debug.Log("Updating save build");
+    }
+
 
     public void SetScene()
     {
@@ -109,6 +135,11 @@ public class Game_Loader : MonoBehaviour
          Instantiate(collisionEffect, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(arrowHead, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(player_body, parent.transform.position, Quaternion.identity, parent.transform); 
+    }
+
+    public void Delete()
+    {
+        Destroy(gameObject);
     }
 
 }

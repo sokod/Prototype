@@ -75,14 +75,17 @@ public class UI_Update : MonoBehaviour
     {
         Game_Manager.Instance.StopSlowMotion();
         DeadScreen.SetActive(false);
+        ShowPauseButton(true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex); //рестарт
     }
+
     /// <summary>
     /// вернуться на первую сцену
     /// </summary>
     public void ToMenu()
     {
         Game_Manager.Instance.StopSlowMotion();
+        Game_Loader.Instance.Delete();
         SceneManager.LoadScene(0);
     }
     /// <summary>
@@ -99,5 +102,14 @@ public class UI_Update : MonoBehaviour
         {
             Time.timeScale = 0;
         }
+    }
+    public void ShowPauseButton(bool state)
+    {
+        GameObject pause_btn = gameObject.transform.Find("Pause").gameObject;
+        if (pause_btn)
+        {
+            pause_btn.SetActive(state);
+        }
+        else Debug.LogWarning("No Pause Button Found");
     }
 }

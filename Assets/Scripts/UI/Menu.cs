@@ -72,6 +72,6 @@ public class Menu : MonoBehaviour
         jump_effect_panel.SetActive(false);
         player_panel.SetActive(false);
         arrow_panel.SetActive(false);
-        collision_effect_panel.SetActive(true);
+        collision_effect_panel.SetActive(false);
     }
 }

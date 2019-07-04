@@ -87,6 +87,7 @@ public class Actor : MonoBehaviour
         if (collision.gameObject.tag == "Finish")
         {
             UI_Update.Instance.DeadScreen.SetActive(true);
+            UI_Update.Instance.ShowPauseButton(false);
             UI_Update.Instance.UpdateHighScore();
             UI_Update.Instance.HighestScore.text = string.Format($"Highest score: {PlayerPrefs.GetFloat("HighScore", 0):f0}");
             Game_Manager.Instance.StartSlowMotion(20);

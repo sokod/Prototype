@@ -6384,8 +6384,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 372b7331331e6c44bb2299e0ca12aeac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player_body: {fileID: 1629521294065383884, guid: babc10612a9e331449ca4125b1b73d8f,
-    type: 3}
   jumpParticleEffect: {fileID: 9040998138287272954, guid: e257ff93e15bd694a9419e570e6c9f19,
     type: 3}
   collisionEffect: {fileID: 5034529155183508085, guid: 015e36010e637304794adc9dd7d44eee,
@@ -13923,6 +13921,17 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1602572557}
         m_MethodName: ShowPanel
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 445338276}
+        m_MethodName: SaveCurrentBuild
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

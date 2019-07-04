@@ -82,7 +82,7 @@ public class Player_Controller : MonoBehaviour
     private void LateUpdate()
     {
         if (player.transform.localScale.x < standartScale.x) // возвращаем объекту стандартную форму
-            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.5f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.5f * Time.fixedDeltaTime);
+            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.25f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.25f * Time.fixedDeltaTime);
     }
 
     /// <summary>
@@ -172,6 +172,12 @@ public class Player_Controller : MonoBehaviour
         {
             jumpReady = true;
             Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.red);
+            //debug
+            Ray2D raytest = new Ray2D(player.transform.position,-pushForceDirection);
+            Vector3 test = raytest.GetPoint(pushForceDirection.sqrMagnitude);
+            Debug.DrawRay(player.transform.position, -pushForceDirection,Color.green);
+            Debug.DrawLine(test, new Vector3(player.transform.position.x,player.transform.position.y,0), Color.blue);// debug
+            //debug
             force = (Mathf.Clamp(pushForceDirection.sqrMagnitude, 0f, maxStretchSqr)) / maxStretchSqr; // ограничиваем силу прыжка от 0 до 1;
             UpdateArrow(force); //обновляем стрелку
         }
