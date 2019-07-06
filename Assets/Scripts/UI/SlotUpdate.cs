@@ -15,7 +15,6 @@ public class SlotUpdate : MonoBehaviour
         int pos = int.Parse(gameObject.name);
         slot_button = gameObject.GetComponent<Button>();
         SetSlot(pos);
-
     }
     /// <summary>
     /// Установить нужный объект из листа объектов Game_Loader
@@ -29,22 +28,25 @@ public class SlotUpdate : MonoBehaviour
             {
                 slot_prefab = Game_Loader.Instance.bodyPrefabs[pos];
                 SetImage();
+                SetButton();
             }
         }
         else if (gameObject.transform.parent.name == "Jump_Effect_Holder")
         {
-            if (Game_Loader.Instance.jumpEffectsPrefabs.Count > pos)
+            if (Game_Loader.Instance.jumpEffectsPrefabs.Length>pos)
             {
-                slot_prefab = Game_Loader.Instance.jumpEffectsPrefabs[pos];
-                //SetObject();
+                slot_prefab = Game_Loader.Instance.jumpEffectsPrefabs[pos].particleEffect;
+                SetImage(Game_Loader.Instance.jumpEffectsPrefabs[pos].particlePicture);
+                SetButton();
             }
         }
         else if (gameObject.transform.parent.name == "Collision_Effect_Holder")
         {
-            if (Game_Loader.Instance.collisionEffectPrefabs.Count > pos)
+            if (Game_Loader.Instance.collisionEffectPrefabs.Length>pos)
             {
-                slot_prefab = Game_Loader.Instance.collisionEffectPrefabs[pos];
-                //SetObject();
+                slot_prefab = Game_Loader.Instance.collisionEffectPrefabs[pos].particleEffect;
+                SetImage(Game_Loader.Instance.collisionEffectPrefabs[pos].particlePicture);
+                SetButton();
             }
         }
         else if (gameObject.transform.parent.name == "Arrow_Holder")
@@ -53,6 +55,7 @@ public class SlotUpdate : MonoBehaviour
             {
                 slot_prefab = Game_Loader.Instance.arrowHeadPrefabs[pos];
                 SetImage();
+                SetButton();
             }
         }
         else
@@ -72,8 +75,16 @@ public class SlotUpdate : MonoBehaviour
         slot_image.enabled = true;
         slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
         HasObject = true;
-        SetButton();
     }
+    private void SetImage(Sprite picture)
+    {
+        slot_image = gameObject.GetComponentsInChildren<Image>()[1];
+        slot_image.sprite = picture;
+        slot_image.enabled = true;
+        slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
+        HasObject = true;
+    }
+
     /// <summary>
     /// Если имя объекта совпадает с настроенным сейчас объектом, то делаем кнопку неактивной
     /// </summary>

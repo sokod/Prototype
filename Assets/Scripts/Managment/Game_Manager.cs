@@ -5,30 +5,33 @@ using UnityEngine;
 public class Game_Manager : MonoBehaviour
 {
     private GameObject deathFloor;
-    public GameObject player;
-    public float floorSpeed;
+    private GameObject player;
+    public float floorSpeed; // regulate speed in Inspector;
     public float gameScore;
     public static Game_Manager Instance;
 
-    private float factor;
-    private bool slowMotionEnabled=false;
-    private float distanceToActor;
+    private float slowDownFactor;
+    public bool slowMotionEnabled {get; private set;}
+    private Vector3 deathFloorUpForceVector;
+    private float startFloorSpeed;
 
     private void Awake()
     {
         if (Instance == null)
         { // Экземпляр менеджера был найден
             Instance = this; // Задаем ссылку на экземпляр объекта
+
+            deathFloor = GameObject.FindGameObjectWithTag("Finish");
+            Game_Loader.Instance.SetScene();
+            player = GameObject.FindGameObjectsWithTag("Player")[1];
+            startFloorSpeed = floorSpeed;
+            slowMotionEnabled = false;
         }
         else if (Instance != null)
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("More than one instances");
         }
-        deathFloor = GameObject.FindGameObjectWithTag("Finish");
-        //
-        Game_Loader.Instance.SetScene();
-        player = GameObject.FindGameObjectsWithTag("Player")[1];
     }
 
     /// <summary>
@@ -39,7 +42,7 @@ public class Game_Manager : MonoBehaviour
     {
         if (!slowMotionEnabled)
         {
-            factor = slowDownFactor;
+            this.slowDownFactor = slowDownFactor;
             Time.timeScale = 1f / slowDownFactor;
             Time.fixedDeltaTime /= slowDownFactor;
             slowMotionEnabled = true;
@@ -53,8 +56,8 @@ public class Game_Manager : MonoBehaviour
         if (slowMotionEnabled)
         {
             Time.timeScale = 1f;
-            Time.fixedDeltaTime *= factor;
-            factor = 0f;
+            Time.fixedDeltaTime *= slowDownFactor;
+            slowDownFactor = 0f;
             slowMotionEnabled = false;
         }
     }
@@ -93,20 +96,44 @@ public class Game_Manager : MonoBehaviour
 
     private void Update()
     {
-        distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude; //дистанция лавы к игроку || експерементально
+         //дистанция лавы к игроку || експерементально
         if (Time.frameCount % 5 == 0) //каждые 5 кадров проверяем позицию игрока и обновляем очки
         {
             gameScore = player.transform.localPosition.y;
             UI_Update.Instance.ShowScore();
         }
+        if (!UI_Update.Instance.IsPaused)
+            deathFloorUpForceVector = DeathFloorPositionUpdate();
+        else deathFloorUpForceVector = Vector3.zero;
     }
 
-    private void FixedUpdate()
+
+    private Vector3 DeathFloorPositionUpdate()
     {
-        float localSpeed;
-        if (distanceToActor > 300)
-            localSpeed = 10;
-        else localSpeed = floorSpeed;
-        deathFloor.transform.position += Vector3.up * Time.fixedDeltaTime* (localSpeed + Time.timeSinceLevelLoad/20f); // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
+        float distanceToActor = (deathFloor.transform.position - player.transform.position).sqrMagnitude;
+        if (distanceToActor > 130 && distanceToActor<400)
+        {
+            float currentFloorSpeed = 3;
+            startFloorSpeed = floorSpeed;
+            return Vector3.up * Time.fixedDeltaTime * (currentFloorSpeed);
+        }
+        else if (distanceToActor > 400)
+        {
+            float currentFloorSpeed = 12;
+            startFloorSpeed = floorSpeed;
+            return Vector3.up * Time.fixedDeltaTime * (currentFloorSpeed);
+        }
+
+        else
+        {
+            startFloorSpeed += Time.fixedDeltaTime*0.04f;
+            return Vector3.up* Time.fixedDeltaTime * (startFloorSpeed);
+        }
     }
+
+    private void LateUpdate()
+    {
+        deathFloor.transform.position += deathFloorUpForceVector;  // плавно перемещаем тригер конца вверх со скоростью floorSpeed || експерементально
+    }
+
 }

@@ -25,9 +25,10 @@ public class Player_Controller : MonoBehaviour
     private LineRenderer arrowTail; //linerenderer стрелки
     private SpriteRenderer arrowHeadSprite;
     private Camera MainCamera;
-
-    public GameObject arrowHead;
+    private GameObject arrowHead;
     private SpriteRenderer sprite;
+    private bool touchedOverUI;
+
     /// <summary>
     /// ищем нужные компоненты на сцене
     /// </summary>
@@ -65,6 +66,10 @@ public class Player_Controller : MonoBehaviour
             {
                 //если регистрируем касание, то записываем информацию о нем в touch
                 touch = Input.GetTouch(0);
+                if (touch.phase == TouchPhase.Began && (!UI_Update.Instance.IsPaused))
+                {
+                    Game_Manager.Instance.StartSlowMotion(10);
+                }
                 // инициируем перемещение
                 Control(touch);
             }
@@ -74,7 +79,7 @@ public class Player_Controller : MonoBehaviour
     void FixedUpdate()
     {
         //если касание завершено
-        if (touch.phase == TouchPhase.Ended && jumpReady)
+        if (touch.phase == TouchPhase.Ended && jumpReady && (!UI_Update.Instance.IsPaused) && (!touchedOverUI))
         {
             Jump(); // прыгаем
         }
@@ -101,7 +106,7 @@ public class Player_Controller : MonoBehaviour
         ParticleSystem.MainModule main = jumpEffect.main;
         main.startSpeedMultiplier = force*3;
 
-        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r - 0.2f, sprite.color.g - 0.2f, sprite.color.b - 0.2f);
+        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r - 0.4f, sprite.color.g - 0.4f, sprite.color.b - 0.4f);
 
     }
 
@@ -111,27 +116,26 @@ public class Player_Controller : MonoBehaviour
     /// <param name="touch">касание</param>
     private void Control(Touch touch)
     {
-        if (touch.phase == TouchPhase.Began)
-        {
-            Game_Manager.Instance.StartSlowMotion(10);
-        }
-        switch (touch.phase)
-        {
-            case TouchPhase.Began: //при регистрации касания замедляем время
-            case TouchPhase.Moved:
-            case TouchPhase.Stationary:
-                if (CanJump())
-                    Dragging();
-                break;
+        if (!UI_Update.Instance.IsPaused)
+            switch (touch.phase)
+            {
+                case TouchPhase.Began: //при регистрации касания замедляем время
+                case TouchPhase.Moved:
+                case TouchPhase.Stationary:
+                    touchedOverUI = false;
+                    if (CanJump())
+                        Dragging();
+                    break;
 
-            case TouchPhase.Canceled:
-            case TouchPhase.Ended:
-                ClearArrow(); //убираем стрелку
-                Game_Manager.Instance.StopSlowMotion();//возвращаемся к нормальному времени
-                break;
-            default:
-                break;
-        }
+                case TouchPhase.Canceled:
+                case TouchPhase.Ended:
+                    ClearArrow(); //убираем стрелку
+                    Game_Manager.Instance.StopSlowMotion();//возвращаемся к нормальному времени
+                    break;
+                default:
+                    break;
+            }
+        else touchedOverUI = true;
     }
 
     /// <summary>
@@ -172,12 +176,6 @@ public class Player_Controller : MonoBehaviour
         {
             jumpReady = true;
             Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.red);
-            //debug
-            Ray2D raytest = new Ray2D(player.transform.position,-pushForceDirection);
-            Vector3 test = raytest.GetPoint(pushForceDirection.sqrMagnitude);
-            Debug.DrawRay(player.transform.position, -pushForceDirection,Color.green);
-            Debug.DrawLine(test, new Vector3(player.transform.position.x,player.transform.position.y,0), Color.blue);// debug
-            //debug
             force = (Mathf.Clamp(pushForceDirection.sqrMagnitude, 0f, maxStretchSqr)) / maxStretchSqr; // ограничиваем силу прыжка от 0 до 1;
             UpdateArrow(force); //обновляем стрелку
         }
@@ -223,6 +221,6 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     public void ResetJumps()
     {
-        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r + 0.2f, sprite.color.g + 0.2f, sprite.color.b + 0.2f);
+        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r + 0.4f, sprite.color.g + 0.4f, sprite.color.b + 0.4f);
         jumpCount = maxJumps;    }
 }

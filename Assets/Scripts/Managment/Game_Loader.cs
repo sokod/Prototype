@@ -2,19 +2,26 @@
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
+public struct SaveParticlesInUI
+{
+    public Sprite particlePicture;
+    public GameObject particleEffect;
+}
+
 public class Game_Loader : MonoBehaviour
 {
     private GameObject player_body;
-    public GameObject jumpParticleEffect; // need solution
-    public GameObject collisionEffect; // need solution
+    private GameObject jumpEffect; 
+    private GameObject collisionEffect; 
     private GameObject arrowHead;
 
     public static Game_Loader Instance;
 
     public List<GameObject> bodyPrefabs = new List<GameObject>();
-    public List<GameObject> jumpEffectsPrefabs = new List<GameObject>();
-    public List<GameObject> collisionEffectPrefabs = new List<GameObject>();
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
+    public SaveParticlesInUI[] jumpEffectsPrefabs;
+    public SaveParticlesInUI[] collisionEffectPrefabs;
 
     private void Awake()
     {
@@ -25,7 +32,7 @@ public class Game_Loader : MonoBehaviour
         else if (Instance != null)
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
-            Debug.LogWarning("More than one instances");
+            Debug.LogWarning("Tried to create another instance");
         }
         LoadBuild();
         DontDestroyOnLoad(gameObject);
@@ -42,8 +49,8 @@ public class Game_Loader : MonoBehaviour
             case "PlayerBody":
                 player_body = selectedObject;
                 break;
-            case "JumpParticleEffect":
-                jumpParticleEffect = selectedObject;
+            case "JumpEffect":
+                jumpEffect = selectedObject;
                 break;
             case "CollisionEffect":
                 collisionEffect = selectedObject;
@@ -68,8 +75,8 @@ public class Game_Loader : MonoBehaviour
         {
             case "PlayerBody":
                 return player_body;
-            case "JumpParticleEffect":
-                return jumpParticleEffect;
+            case "JumpEffect":
+                return jumpEffect;
             case "CollisionEffect":
                 return collisionEffect;
             case "ArrowHead":
@@ -107,11 +114,24 @@ public class Game_Loader : MonoBehaviour
             if (body.name == name)
                 player_body = body;
         }
+
         name = PlayerPrefs.GetString("ArrowHead","ArrowHead");
         foreach(GameObject arrow in arrowHeadPrefabs)
         {
             if (arrow.name == name)
                 arrowHead = arrow;
+        }
+
+        name = PlayerPrefs.GetString("JumpEffect", "JumpEffect");
+        for (int i = 0; i < jumpEffectsPrefabs.Length; i++){
+            if (jumpEffectsPrefabs[i].particleEffect.name == name)
+                jumpEffect = jumpEffectsPrefabs[i].particleEffect;
+        }
+
+        name = PlayerPrefs.GetString("CollisionEffect", "CollisionEffect");
+        for (int i = 0; i < collisionEffectPrefabs.Length; i++){
+            if (collisionEffectPrefabs[i].particleEffect.name == name)
+                collisionEffect = collisionEffectPrefabs[i].particleEffect;
         }
     }
 
@@ -123,6 +143,12 @@ public class Game_Loader : MonoBehaviour
         if (PlayerPrefs.GetString("ArrowHead") != arrowHead.name)
             PlayerPrefs.SetString("ArrowHead", arrowHead.name);
 
+        if (PlayerPrefs.GetString("JumpEffect") != jumpEffect.name)
+            PlayerPrefs.SetString("JumpEffect", jumpEffect.name);
+
+        if (PlayerPrefs.GetString("CollisionEffect") != collisionEffect.name)
+            PlayerPrefs.SetString("CollisionEffect", collisionEffect.name);
+
         Debug.Log("Updating save build");
     }
 
@@ -131,7 +157,7 @@ public class Game_Loader : MonoBehaviour
     {
         GameObject parent = GameObject.FindGameObjectWithTag("Player");
         if (!parent) return;
-         Instantiate(jumpParticleEffect, parent.transform.position, Quaternion.identity, parent.transform);
+         Instantiate(jumpEffect, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(collisionEffect, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(arrowHead, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(player_body, parent.transform.position, Quaternion.identity, parent.transform); 

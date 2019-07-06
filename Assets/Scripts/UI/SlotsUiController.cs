@@ -22,4 +22,9 @@ public class SlotsUiController : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        //Debug.Log(grid.cellGap.x);   
+    }
+
 }

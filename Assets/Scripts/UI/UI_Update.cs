@@ -11,6 +11,9 @@ public class UI_Update : MonoBehaviour
     public float penalty;
     //форс апдейт очков
     public bool forceUpdate;
+    public bool IsPaused { get; private set; }
+
+
     /// <summary>
     /// экран game over
     /// </summary>
@@ -24,14 +27,15 @@ public class UI_Update : MonoBehaviour
         if (Instance == null)
         { // Экземпляр менеджера был найден
             Instance = this; // Задаем ссылку на экземпляр объекта
+
+            IsPaused = false;
+            text = GetComponentInChildren<Text>();
         }
         else if (Instance != null)
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("More than one instances");
         }
-
-        text = GetComponentInChildren<Text>();
     }
     /// <summary>
     /// вывод очков на экран
@@ -97,10 +101,12 @@ public class UI_Update : MonoBehaviour
         if (Time.timeScale < 1)
         {
             Time.timeScale = 1;
+            IsPaused = false;
         }
         else
         {
             Time.timeScale = 0;
+            IsPaused = true;
         }
     }
     public void ShowPauseButton(bool state)
@@ -111,5 +117,10 @@ public class UI_Update : MonoBehaviour
             pause_btn.SetActive(state);
         }
         else Debug.LogWarning("No Pause Button Found");
+    }
+
+    public void ActivatePanel(GameObject panel)
+    {
+        panel.SetActive(!panel.activeSelf);
     }
 }

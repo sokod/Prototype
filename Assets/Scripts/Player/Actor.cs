@@ -5,38 +5,16 @@ using UnityEngine;
 public class Actor : MonoBehaviour
 {
     private Player_Controller controller;
-    //private SpriteRenderer sprite;
-
-    
-    //public GameObject deathFloor;
-    
     public ParticleSystem collisionParticle;
-
     private Rigidbody2D player_rb;
 
     private void Awake()
     {
         controller = GetComponent<Player_Controller>();
-        //controller = GameObject.FindGameObjectWithTag("GameController").GetComponent<Player_Controller>();
-        //sprite = GetComponent<SpriteRenderer>();
         player_rb = GetComponent<Rigidbody2D>();
-        //
         collisionParticle = GameObject.FindGameObjectsWithTag("Particle System")[1].GetComponent<ParticleSystem>();
 
     }
-
-    /*
-    private void Update()
-    {
-        if (!controller.CanJump())
-        {
-            sprite.color = new Color(1f, 0.92f, 0.7f, 1f);
-        }
-        else
-        {
-            sprite.color = Color.yellow;
-        }
-    }*/
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -62,12 +40,7 @@ public class Actor : MonoBehaviour
         {
             //collisionParticle.transform.position = collision.collider.ClosestPoint(transform.position); //узнаем примерную точку столкновения
             collisionParticle.transform.position = collision.contacts[0].point; //узнаем примерную точку столкновения
-            //Vector3 direction = transform.position - collision.transform.position; //узнаем вектор направления к объекту колизии
-            //direction.Normalize();
-            //Game_Manager.Instance.SetAngle(direction, collisionParticle.transform); // поворачиваем систему частиц к направлению колизии
-
             SpriteRenderer collisionObject = collision.collider.GetComponent<SpriteRenderer>();
-
             // установка цвета градиента в цикле жизни частицы
             var col = collisionParticle.colorOverLifetime;
             Gradient gradient = new Gradient();
