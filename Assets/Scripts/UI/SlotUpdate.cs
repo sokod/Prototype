@@ -8,19 +8,22 @@ public class SlotUpdate : MonoBehaviour
     public bool HasObject { get; private set;} //настроен ли объект
     private Image slot_image;
     private GameObject slot_prefab;
-    private Button slot_button;
+    public Button slot_button;
+    private GameObject slot_blocker;
 
     private void Start()
     {
         int pos = int.Parse(gameObject.name);
         slot_button = gameObject.GetComponent<Button>();
         SetSlot(pos);
+        if(HasObject)
+            slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
     }
     /// <summary>
     /// Установить нужный объект из листа объектов Game_Loader, если объектов в листе больше чем номер текущего слота
     /// </summary>
     /// <param name="pos"></param>
-    private void SetSlot(int pos)
+    public void SetSlot(int pos)
     {
         if (gameObject.transform.parent.name == "Player_Holder")
         {
@@ -78,7 +81,26 @@ public class SlotUpdate : MonoBehaviour
         {
             Debug.LogError("Didn't Find Prefab");
         }
+
+        if (gameObject.transform.Find("Blocker") != null)
+        {
+            slot_blocker = gameObject.transform.Find("Blocker").gameObject;
+            if (pos == gameObject.transform.parent.GetComponent<SlotsUiController>().unlockedSkins + 1)
+            {
+                slot_button.onClick.AddListener(UpdateBlocker);
+                slot_blocker.SetActive(true);
+            }
+        }
+
+        if (slot_blocker != null && HasObject && pos > gameObject.transform.parent.GetComponent<SlotsUiController>().unlockedSkins+1)
+        {
+            slot_image.enabled = false;
+            slot_button.interactable = false;
+            slot_blocker.SetActive(true);
+        }
+
     }
+
     /// <summary>
     /// настроить картинку, цвет, кнопку
     /// </summary>
@@ -89,7 +111,6 @@ public class SlotUpdate : MonoBehaviour
         if (gameObject.transform.parent.name != "Arrow_Holder")
             slot_image.color = slot_prefab.GetComponentInChildren<SpriteRenderer>().color;
         slot_image.enabled = true;
-        slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
         HasObject = true;
     }
     private void SetImage(Sprite picture)
@@ -97,7 +118,6 @@ public class SlotUpdate : MonoBehaviour
         slot_image = gameObject.GetComponentsInChildren<Image>()[1];
         slot_image.sprite = picture;
         slot_image.enabled = true;
-        slot_button.onClick.AddListener(UpdateLoader); // при нажатии выполняем UpdateLoader
         HasObject = true;
     }
 
@@ -114,9 +134,17 @@ public class SlotUpdate : MonoBehaviour
             slot_button.colors = color_block;
             */
             slot_button.interactable = false;
+
+            gameObject.transform.parent.GetComponent<SlotsUiController>().ChangeCurrentObject(int.Parse(gameObject.name));
         }
         //if (slot_prefab.name)
         else slot_button.interactable = true;
+    }
+
+    public void UpdateBlocker()
+    {
+        Debug.Log("TEST");
+        BuyBlockedWindow();
     }
 
     /// <summary>
@@ -125,6 +153,16 @@ public class SlotUpdate : MonoBehaviour
     private void UpdateLoader()
     {
         Game_Loader.Instance.ChangeSelectedObject(slot_prefab);
-        GetComponentInParent<SlotsUiController>().UpdateSet();
+        SetButton();
+        //GetComponentInParent<SlotsUiController>().UpdateSet();
+    }
+
+    private void BuyBlockedWindow()
+    {
+        Game_Loader.Instance.testWindow.SetActive(true);
+        slot_button.onClick.RemoveListener(UpdateBlocker);
+
+        gameObject.GetComponentInParent<SlotsUiController>().UnlockSkin(int.Parse(gameObject.name));
+        slot_blocker.SetActive(false);
     }
 }

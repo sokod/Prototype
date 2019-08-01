@@ -16,7 +16,7 @@ public class Game_Loader : MonoBehaviour
     private GameObject collisionEffect; 
     private GameObject arrowHead;
     public int gems { get; private set; }
-
+    public GameObject testWindow;
     public static Game_Loader Instance;
     public List<GameObject> bodyPrefabs = new List<GameObject>();
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
