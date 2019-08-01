@@ -22,6 +22,7 @@ public class UI_Update : MonoBehaviour
     public Text HighestScore;
 
     private float highScore;
+    public float score { private set; get; }
     private void Awake()
     {
         if (Instance == null)
@@ -35,6 +36,7 @@ public class UI_Update : MonoBehaviour
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("More than one instances");
+            return;
         }
     }
     /// <summary>
@@ -42,7 +44,7 @@ public class UI_Update : MonoBehaviour
     /// </summary>
     public void ShowScore()
     {
-        float score = Game_Manager.Instance.gameScore * 2 - penalty;
+        score = Game_Manager.Instance.playerMoveScore * 2 - penalty;
         if (highScore < score || (forceUpdate && !DeadScreen.activeInHierarchy))
         {
             highScore = score;

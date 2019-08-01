@@ -9,11 +9,42 @@ public class Spawner : MonoBehaviour
     public GameObject wall;
     public GameObject portal;
     public GameObject oneSideWall;
+    public GameObject power_portal;
+
+    private Vector3 lastSpawnedPosition;
+
     // Start is called before the first frame update
     void Start()
     {
-        Spawn();
+        lastSpawnedPosition = new Vector3(0, -3, 0);
+        //Spawn();
+        AlternateSpawn();
     }
+
+    void AlternateSpawn()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            AlternateCreate();
+        }
+    }
+    void AlternateCreate()
+    {
+        Vector3 coordinates = FormNewCoordinate();
+        Instantiate(power_portal, coordinates, Quaternion.identity);
+        lastSpawnedPosition = coordinates;
+    }
+
+    Vector3 FormNewCoordinate()
+    {
+        Vector3 coordinates = new Vector3(Random.Range(-2.5f, 2.5f), Random.Range(lastSpawnedPosition.y + 0.5f, lastSpawnedPosition.y + 4f), 0);
+        while ((coordinates - lastSpawnedPosition).sqrMagnitude < 2.5f)
+        {
+            coordinates = FormNewCoordinate();
+        }
+        return coordinates;
+    }
+
     /// <summary>
     /// спавн блоков
     /// </summary>
@@ -57,7 +88,8 @@ public class Spawner : MonoBehaviour
         if (collision.gameObject.tag == "MainCamera")
         {
             transform.position += Vector3.up*3.5f;
-            Spawn();
+            //Spawn();
+            AlternateSpawn(); 
         }
     }
 }

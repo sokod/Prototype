@@ -17,14 +17,9 @@ public class SlotsUiController : MonoBehaviour
     {
         for (int i = 0; i < slots.Length; i++)
         {
-            if (slots[i].HasObject)
+            if (slots[i].HasObject) 
                 slots[i].SetButton();
         }
-    }
-
-    private void Update()
-    {
-        //Debug.Log(grid.cellGap.x);   
     }
 
 }

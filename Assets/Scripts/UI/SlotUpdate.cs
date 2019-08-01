@@ -17,7 +17,7 @@ public class SlotUpdate : MonoBehaviour
         SetSlot(pos);
     }
     /// <summary>
-    /// Установить нужный объект из листа объектов Game_Loader
+    /// Установить нужный объект из листа объектов Game_Loader, если объектов в листе больше чем номер текущего слота
     /// </summary>
     /// <param name="pos"></param>
     private void SetSlot(int pos)
@@ -30,6 +30,10 @@ public class SlotUpdate : MonoBehaviour
                 SetImage();
                 SetButton();
             }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
         else if (gameObject.transform.parent.name == "Jump_Effect_Holder")
         {
@@ -38,6 +42,10 @@ public class SlotUpdate : MonoBehaviour
                 slot_prefab = Game_Loader.Instance.jumpEffectsPrefabs[pos].particleEffect;
                 SetImage(Game_Loader.Instance.jumpEffectsPrefabs[pos].particlePicture);
                 SetButton();
+            }
+            else
+            {
+                gameObject.SetActive(false);
             }
         }
         else if (gameObject.transform.parent.name == "Collision_Effect_Holder")
@@ -48,6 +56,10 @@ public class SlotUpdate : MonoBehaviour
                 SetImage(Game_Loader.Instance.collisionEffectPrefabs[pos].particlePicture);
                 SetButton();
             }
+            else
+            {
+                gameObject.SetActive(false);
+            }
         }
         else if (gameObject.transform.parent.name == "Arrow_Holder")
         {
@@ -56,6 +68,10 @@ public class SlotUpdate : MonoBehaviour
                 slot_prefab = Game_Loader.Instance.arrowHeadPrefabs[pos];
                 SetImage();
                 SetButton();
+            }
+            else
+            {
+                gameObject.SetActive(false);
             }
         }
         else
@@ -99,6 +115,7 @@ public class SlotUpdate : MonoBehaviour
             */
             slot_button.interactable = false;
         }
+        //if (slot_prefab.name)
         else slot_button.interactable = true;
     }
 

@@ -62,6 +62,7 @@ public class Actor : MonoBehaviour
             UI_Update.Instance.DeadScreen.SetActive(true);
             UI_Update.Instance.ShowPauseButton(false);
             UI_Update.Instance.UpdateHighScore();
+            Game_Loader.Instance.UpdateGems(Mathf.RoundToInt(UI_Update.Instance.score/10f));
             UI_Update.Instance.HighestScore.text = string.Format($"Highest score: {PlayerPrefs.GetFloat("HighScore", 0):f0}");
             Game_Manager.Instance.StartSlowMotion(20);
             StartCoroutine(GameOver());

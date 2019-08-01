@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.UI;
 public class Menu : MonoBehaviour
 {
     public GameObject customize_panel;
@@ -11,6 +11,14 @@ public class Menu : MonoBehaviour
     public GameObject jump_effect_panel;
     public GameObject collision_effect_panel;
     public GameObject arrow_panel;
+    public GameObject gems_panel;
+    private Text gems;
+
+    public void Awake()
+    {
+        gems = gems_panel.GetComponentInChildren<Text>();
+        gems.text = Game_Loader.Instance.gems.ToString();
+    }
 
     public void StartGame()
     {
@@ -39,30 +47,37 @@ public class Menu : MonoBehaviour
         {
             case "Player":
                 player_panel.SetActive(true);
+                gems_panel.SetActive(false);
                 break;
             case "Jump Effects":
                 jump_effect_panel.SetActive(true);
+                gems_panel.SetActive(false);
                 break;
             case "Collision Effects":
                 collision_effect_panel.SetActive(true);
+                gems_panel.SetActive(false);
                 break;
             case "Arrow":
                 arrow_panel.SetActive(true);
+                gems_panel.SetActive(false);
                 break;
             case "Customize":
                 customize_panel.SetActive(true);
                 break;
             case "BackToMenu":
                 DisableAll();
+                gems_panel.SetActive(true);
                 break;
             case "Back":
                 EventSystem.current.currentSelectedGameObject.transform.parent.gameObject.SetActive(false);
+                gems_panel.SetActive(true);
                 break;
             default:
                 break;
 
         }
     }
+
     /// <summary>
     /// скрыть все панели
     /// </summary>

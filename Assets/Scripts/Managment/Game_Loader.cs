@@ -15,9 +15,9 @@ public class Game_Loader : MonoBehaviour
     private GameObject jumpEffect; 
     private GameObject collisionEffect; 
     private GameObject arrowHead;
+    public int gems { get; private set; }
 
     public static Game_Loader Instance;
-
     public List<GameObject> bodyPrefabs = new List<GameObject>();
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
     public SaveParticlesInUI[] jumpEffectsPrefabs;
@@ -33,8 +33,10 @@ public class Game_Loader : MonoBehaviour
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("Tried to create another instance");
+            return;
         }
         LoadBuild();
+        gems = PlayerPrefs.GetInt("Gems", 0);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -101,6 +103,7 @@ public class Game_Loader : MonoBehaviour
         if (name.Length > 0)
             id = name[0];
         else id = selectedObject.name;
+        Debug.Log(id);
         return id;
     }
     /// <summary>
@@ -152,7 +155,20 @@ public class Game_Loader : MonoBehaviour
         Debug.Log("Updating save build");
     }
 
+    public void SaveCurrentGems()
+    {
+        PlayerPrefs.SetInt("Gems", gems);
+    }
 
+    public bool UpdateGems(int value)
+    {
+        if (gems + value < 0)
+            return false;
+        else gems += value;
+        SaveCurrentGems();
+        Debug.Log("Updating Gems value " + gems +"  " + value);
+        return true;
+    }
     public void SetScene()
     {
         GameObject parent = GameObject.FindGameObjectWithTag("Player");

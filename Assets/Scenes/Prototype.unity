@@ -2597,6 +2597,8 @@ MonoBehaviour:
   portal: {fileID: 2637587118846443232, guid: 01c144f3021465346aa9a65bd5ceace5, type: 3}
   oneSideWall: {fileID: 2637587118846443232, guid: e3f5e172ed4fac243a4df9be96197181,
     type: 3}
+  power_portal: {fileID: 2637587118846443232, guid: 088acbd1c3d7617438a1d600c9fa43b1,
+    type: 3}
 --- !u!58 &1652567452
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -3339,7 +3341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floorSpeed: 0.1
-  gameScore: 0
+  playerMoveScore: 0
 --- !u!4 &2099280687
 Transform:
   m_ObjectHideFlags: 0

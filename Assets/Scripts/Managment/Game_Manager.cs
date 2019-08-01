@@ -7,7 +7,7 @@ public class Game_Manager : MonoBehaviour
     private GameObject deathFloor;
     private GameObject player;
     public float floorSpeed; // regulate speed in Inspector;
-    public float gameScore;
+    public float playerMoveScore; 
     public static Game_Manager Instance;
 
     private float slowDownFactor;
@@ -31,6 +31,7 @@ public class Game_Manager : MonoBehaviour
         { // Экземпляр объекта уже существует на сцене
             Destroy(gameObject); // Удаляем объект
             Debug.LogWarning("More than one instances");
+            return;
         }
     }
 
@@ -99,7 +100,7 @@ public class Game_Manager : MonoBehaviour
          //дистанция лавы к игроку || експерементально
         if (Time.frameCount % 5 == 0) //каждые 5 кадров проверяем позицию игрока и обновляем очки
         {
-            gameScore = player.transform.localPosition.y;
+            playerMoveScore = player.transform.localPosition.y;
             UI_Update.Instance.ShowScore();
         }
         if (!UI_Update.Instance.IsPaused)
