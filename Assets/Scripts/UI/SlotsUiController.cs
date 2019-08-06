@@ -7,6 +7,8 @@ public class SlotsUiController : MonoBehaviour
     private SlotUpdate[] slots;
     public int unlockedSkins { get; private set; }
     public int positionOfCurrentObject { get; private set; }
+    public GameObject buy_Confirmation_Panel;
+
     void Start()
     {
         slots = GetComponentsInChildren<SlotUpdate>();
@@ -41,10 +43,11 @@ public class SlotsUiController : MonoBehaviour
         
         int previousPos = positionOfCurrentObject;
         if (previousPos == value) return;
-        slots[previousPos].slot_button.interactable=true;
-        positionOfCurrentObject = value;
+        else
+        {
+            slots[previousPos].slot_button.interactable = true;
+            positionOfCurrentObject = value;
+        }
     }
-
-
 
 }

@@ -10,6 +10,7 @@ public class SlotUpdate : MonoBehaviour
     private GameObject slot_prefab;
     public Button slot_button;
     private GameObject slot_blocker;
+    private int price=10;
 
     private void Start()
     {
@@ -98,7 +99,6 @@ public class SlotUpdate : MonoBehaviour
             slot_button.interactable = false;
             slot_blocker.SetActive(true);
         }
-
     }
 
     /// <summary>
@@ -141,10 +141,17 @@ public class SlotUpdate : MonoBehaviour
         else slot_button.interactable = true;
     }
 
-    public void UpdateBlocker()
+    private void UpdateBlocker()
     {
         Debug.Log("TEST");
-        BuyBlockedWindow();
+        GameObject buy_Confirmation_Panel = gameObject.transform.parent.GetComponent<SlotsUiController>().buy_Confirmation_Panel;
+        Text buy_panel_text = buy_Confirmation_Panel.GetComponentsInChildren<Text>()[0];
+        buy_panel_text.text = $"Do you want to buy this item for {price}?";
+
+        if(!buy_Confirmation_Panel.activeSelf)
+            buy_Confirmation_Panel.SetActive(true);
+        Button buy_confirmation = buy_Confirmation_Panel.GetComponentInChildren<Button>();
+        buy_confirmation.onClick.AddListener(BuyComponent);
     }
 
     /// <summary>
@@ -152,17 +159,33 @@ public class SlotUpdate : MonoBehaviour
     /// </summary>
     private void UpdateLoader()
     {
-        Game_Loader.Instance.ChangeSelectedObject(slot_prefab);
-        SetButton();
+        if (!slot_blocker.activeSelf)
+        {
+            Game_Loader.Instance.ChangeSelectedObject(slot_prefab);
+            SetButton();
+        }
         //GetComponentInParent<SlotsUiController>().UpdateSet();
     }
 
-    private void BuyBlockedWindow()
+    private void BuyComponent()
     {
-        Game_Loader.Instance.testWindow.SetActive(true);
-        slot_button.onClick.RemoveListener(UpdateBlocker);
-
-        gameObject.GetComponentInParent<SlotsUiController>().UnlockSkin(int.Parse(gameObject.name));
-        slot_blocker.SetActive(false);
+        GameObject buy_Confirmation_Panel = gameObject.transform.parent.GetComponent<SlotsUiController>().buy_Confirmation_Panel;
+        Button buy_confirmation = buy_Confirmation_Panel.GetComponentInChildren<Button>();
+        if (Game_Loader.Instance.gems<price)
+        {
+            Text buy_panel_text = buy_Confirmation_Panel.GetComponentsInChildren<Text>()[0];
+            buy_panel_text.text = $"Not enough {price-Game_Loader.Instance.gems} gems.";
+        }
+        else
+        {
+            Game_Loader.Instance.UpdateGems(-price);
+            slot_blocker.SetActive(false);
+            buy_Confirmation_Panel.SetActive(false);
+            gameObject.GetComponentInParent<SlotsUiController>().UnlockSkin(int.Parse(gameObject.name));
+            slot_button.onClick.RemoveListener(UpdateBlocker);
+            UpdateLoader();
+        }
+        // do it anyway
+        buy_confirmation.onClick.RemoveAllListeners();
     }
 }

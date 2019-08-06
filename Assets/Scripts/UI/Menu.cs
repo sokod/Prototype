@@ -16,13 +16,17 @@ public class Menu : MonoBehaviour
 
     public void Awake()
     {
+        InvokeRepeating("UpdateGems", 0, 1f);
+    }
+
+    void UpdateGems()
+    {
         gems = gems_panel.GetComponentInChildren<Text>();
         gems.text = Game_Loader.Instance.gems.ToString();
     }
-
     public void StartGame()
     {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
     }
     public void Quit()
     {

@@ -9,6 +9,7 @@ TagManager:
   - One Side Wall
   - Score
   - Portal
+  - Buy_Panel
   layers:
   - Default
   - TransparentFX
