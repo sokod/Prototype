@@ -102,7 +102,6 @@ public class Game_Loader : MonoBehaviour
         if (name.Length > 0)
             id = name[0];
         else id = selectedObject.name;
-        Debug.Log(id);
         return id;
     }
     /// <summary>

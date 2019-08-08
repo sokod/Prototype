@@ -1340,10 +1340,10 @@ MonoBehaviour:
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -6949,6 +6949,62 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 283614428}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &302559037
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 302559039}
+  - component: {fileID: 302559038}
+  m_Layer: 0
+  m_Name: Audio_Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &302559038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302559037}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a8c08d6b5d95db4382b782d77963a36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: Button_Click
+    clip: {fileID: 8300000, guid: 2b067dc80ae4e304fa704d8b5614c2a7, type: 3}
+    source: {fileID: 0}
+    volume: 0.7
+    pitch: 1
+    loop: 0
+  - name: Music
+    clip: {fileID: 0}
+    source: {fileID: 0}
+    volume: 0.7
+    pitch: 1
+    loop: 1
+--- !u!4 &302559039
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 302559037}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 488.35565, y: 859.1285, z: -740.25}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &303426092
 GameObject:
   m_ObjectHideFlags: 0
@@ -29139,6 +29195,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buy_Confirmation_Panel: {fileID: 387907767}
+  price_Tag: {fileID: 2588176751901269750, guid: b57f45cae705f4548b8fdc0cf451850c,
+    type: 3}
 --- !u!114 &1490946227
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32324,6 +32382,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buy_Confirmation_Panel: {fileID: 387907767}
+  price_Tag: {fileID: 2588176751901269750, guid: b57f45cae705f4548b8fdc0cf451850c,
+    type: 3}
 --- !u!114 &1656505670
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36636,7 +36696,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a909a7ad2590e2a478ce3084c6a75639, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buy_Confirmation_Panel: {fileID: 1201310452}
+  buy_Confirmation_Panel: {fileID: 387907767}
+  price_Tag: {fileID: 2588176751901269750, guid: b57f45cae705f4548b8fdc0cf451850c,
+    type: 3}
 --- !u!114 &1869628955
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36867,6 +36929,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buy_Confirmation_Panel: {fileID: 387907767}
+  price_Tag: {fileID: 2588176751901269750, guid: b57f45cae705f4548b8fdc0cf451850c,
+    type: 3}
 --- !u!114 &1879856483
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,6 +8,7 @@ public class SlotsUiController : MonoBehaviour
     public int unlockedSkins { get; private set; }
     public int positionOfCurrentObject { get; private set; }
     public GameObject buy_Confirmation_Panel;
+    public GameObject price_Tag;
 
     void Start()
     {
@@ -19,9 +20,11 @@ public class SlotsUiController : MonoBehaviour
     }
     public void UnlockSkin(int number)
     {
-        unlockedSkins=number;
+        if(unlockedSkins==number) return;
+        unlockedSkins = number;
         PlayerPrefs.SetInt(gameObject.name, unlockedSkins);
         slots[number + 1].SetSlot(number + 1);
+        Debug.Log("Updating unlocked skins. Skin group: "+ gameObject.name +"; skin number " +number);
     }
 
     /// <summary>
