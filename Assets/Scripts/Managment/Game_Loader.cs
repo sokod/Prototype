@@ -35,7 +35,8 @@ public class Game_Loader : MonoBehaviour
             return;
         }
         LoadBuild();
-        gems = PlayerPrefs.GetInt("Gems", 0);
+        gems = 100;
+        //gems = PlayerPrefs.GetInt("Gems", 0);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -176,10 +177,8 @@ public class Game_Loader : MonoBehaviour
          Instantiate(arrowHead, parent.transform.position, Quaternion.identity, parent.transform);
          Instantiate(player_body, parent.transform.position, Quaternion.identity, parent.transform); 
     }
-
     public void Delete()
     {
         Destroy(gameObject);
     }
-
 }

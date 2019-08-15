@@ -26,8 +26,10 @@ public class Menu : MonoBehaviour
     }
     public void StartGame()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex+1);
+        GameObject transition = GameObject.FindWithTag("SceneTransition");
+        transition.GetComponent<Transitions>().SetTransition(1);
     }
+
     public void Quit()
     {
         Application.Quit();

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.Events;
 public class SlotUpdate : MonoBehaviour
 {
     public bool HasObject { get; private set;} //настроен ли объект
@@ -13,7 +13,6 @@ public class SlotUpdate : MonoBehaviour
     private int price;
     private GameObject priceTagPrefab;
     private SlotsUiController parentController;
-    private bool BuyComponentListener=false;
 
     private void Start()
     {
@@ -102,7 +101,7 @@ public class SlotUpdate : MonoBehaviour
             if (pos == parentController.unlockedSkins + 1)
             {
                 slot_button.onClick.AddListener(ShowBuyWindow);
-                Debug.Log("Listener is added UpdateBlocker " + gameObject.transform.parent.name + " slot №" + gameObject.name);
+                Debug.Log("Listener is added ShowBuyWindow " + gameObject.transform.parent.name + " slot №" + gameObject.name);
                 slot_blocker.SetActive(true);
                 SetPriceTag();
             }
@@ -173,12 +172,11 @@ public class SlotUpdate : MonoBehaviour
             buy_Confirmation_Panel.SetActive(true);
         Button buy_confirmation = buy_Confirmation_Panel.GetComponentInChildren<Button>();
         buy_confirmation.interactable = true;
-        if (!BuyComponentListener)
-        {
             buy_confirmation.onClick.AddListener(BuyButtonPressed);
-            Debug.Log("Listener is added BuyComponent");
-        }
-        BuyComponentListener = true;
+            Debug.Log("Listener is added BuyButtonPressed");
+        Button buy_cancel = buy_Confirmation_Panel.GetComponentsInChildren<Button>()[1];
+        buy_cancel.onClick.AddListener(CancelButtonPressed);
+        Debug.Log("Listener added CancelButtonPressed");
     }
 
     /// <summary>
@@ -191,7 +189,6 @@ public class SlotUpdate : MonoBehaviour
             Game_Loader.Instance.ChangeSelectedObject(slot_prefab);
             SetButton();
         }
-        //GetComponentInParent<SlotsUiController>().UpdateSet();
     }
 
     private void BuyButtonPressed()
@@ -212,10 +209,21 @@ public class SlotUpdate : MonoBehaviour
             parentController.UnlockSkin(int.Parse(gameObject.name));
             Destroy(priceTagPrefab);
             slot_button.onClick.RemoveListener(ShowBuyWindow);
-            Debug.Log("Listener is removed UpdateBlocker");
+            Debug.Log("Listener is removed ShowBuyWindow");
             UpdateLoader();
         }
         buy_confirmation.onClick.RemoveListener(BuyButtonPressed);
-        Debug.Log("Listener is removed BuyComponent");
+        Debug.Log("Listener is removed BuyButtonPressed");
     }
+    private void CancelButtonPressed()
+    {
+        GameObject buy_Confirmation_Panel = parentController.buy_Confirmation_Panel;
+        Button buy_button = buy_Confirmation_Panel.GetComponentsInChildren<Button>()[0];
+        Button cancel_button = buy_Confirmation_Panel.GetComponentsInChildren<Button>()[1];
+        buy_button.onClick.RemoveListener(BuyButtonPressed);
+        cancel_button.onClick.RemoveListener(CancelButtonPressed);
+        Debug.Log("Listener CancelButtonPressed and BuyButtonPressed is removed");
+
+    }
+
 }

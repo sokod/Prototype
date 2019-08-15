@@ -14,9 +14,7 @@ public class Sound
     public float volume;
     [Range(0, 1)]
     public float pitch;
-
     public bool loop;
-
 }
 
 public class Audio_Manager : MonoBehaviour
@@ -40,7 +38,6 @@ public class Audio_Manager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
-
         foreach (Sound s in sounds)
         {
             s.source = gameObject.AddComponent<AudioSource>();
@@ -80,6 +77,18 @@ public class Audio_Manager : MonoBehaviour
             if (s.name == name)
             {
                 s.source.volume = 0;
+                return;
+            }
+        }
+    }
+
+    public void SetPitch(string name, float value)
+    {
+        foreach (Sound s in sounds)
+        {
+            if (s.name == name)
+            {
+                s.source.pitch = value;
                 return;
             }
         }

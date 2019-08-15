@@ -10,6 +10,7 @@ TagManager:
   - Score
   - Portal
   - Buy_Panel
+  - SceneTransition
   layers:
   - Default
   - TransparentFX

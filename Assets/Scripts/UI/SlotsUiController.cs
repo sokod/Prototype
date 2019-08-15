@@ -16,7 +16,7 @@ public class SlotsUiController : MonoBehaviour
     }
     private void Awake()
     {
-        unlockedSkins = 0;//PlayerPrefs.GetInt(gameObject.name, 1);
+        PlayerPrefs.GetInt(gameObject.name, 1);
     }
     public void UnlockSkin(int number)
     {
