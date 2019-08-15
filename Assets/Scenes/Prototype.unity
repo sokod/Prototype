@@ -675,6 +675,7 @@ GameObject:
   - component: {fileID: 519420034}
   - component: {fileID: 519420033}
   - component: {fileID: 519420035}
+  - component: {fileID: 519420036}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -856,6 +857,19 @@ EdgeCollider2D:
   m_Points:
   - {x: -4.775201, y: 0}
   - {x: 5.5131817, y: 0}
+--- !u!114 &519420036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 1e1a17ea445464d479832bcb3cd56f5d, type: 2}
 --- !u!1 &542100941
 GameObject:
   m_ObjectHideFlags: 0
@@ -1420,6 +1434,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'SceneTransition '
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460836476166110817, guid: 0ee4ed69cb2c40344b0074ee92e33723,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3460836476166110819, guid: 0ee4ed69cb2c40344b0074ee92e33723,
         type: 3}
