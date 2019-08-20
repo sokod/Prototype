@@ -87,7 +87,11 @@ public class Player_Controller : MonoBehaviour
     private void LateUpdate()
     {
         if (player.transform.localScale.x < standartScale.x) // возвращаем объекту стандартную форму
-            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.25f*Time.fixedDeltaTime, player.transform.localScale.y+ 0.25f * Time.fixedDeltaTime);
+            player.transform.localScale = new Vector2(player.transform.localScale.x + 0.2f*Time.fixedDeltaTime, player.transform.localScale.y);
+
+        if (player.transform.localScale.y < standartScale.y && !Game_Manager.Instance.slowMotionEnabled)
+            player.transform.localScale = new Vector2(player.transform.localScale.x, player.transform.localScale.y + 0.2f * Time.fixedDeltaTime);
+
     }
 
     /// <summary>
@@ -102,7 +106,8 @@ public class Player_Controller : MonoBehaviour
         jumpReady = false;
         jumpCount--;
         jumpEffect.Play(); // включаем выброс частиц
-        player.transform.localScale *= 0.7f;// уменшаем героя
+        //player.transform.localScale *= 0.7f;// уменшаем героя
+        player.transform.localScale *= Mathf.Clamp((1f - force / 4f),0.6f,0.85f);
         ParticleSystem.MainModule main = jumpEffect.main;
         main.startSpeedMultiplier = force*3;
 
@@ -178,9 +183,11 @@ public class Player_Controller : MonoBehaviour
             Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.red);
             force = (Mathf.Clamp(pushForceDirection.sqrMagnitude, 0f, maxStretchSqr)) / maxStretchSqr; // ограничиваем силу прыжка от 0 до 1;
             UpdateArrow(force); //обновляем стрелку
+            //player.transform.localScale = new Vector2(player.transform.localScale.x, Mathf.Clamp(player.transform.localScale.y - force/10f, player.transform.localScale.y - 0.1f,player.transform.localScale.y));
         }
         arrowHead.transform.position = touchedWorldPoint; // ставим стрелку в нажатую точку
         jumpEffect.transform.position = player.transform.position; // ставим частицы на игрока
+
     }
 
     /// <summary>

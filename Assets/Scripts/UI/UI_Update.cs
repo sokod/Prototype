@@ -8,9 +8,18 @@ public class UI_Update : MonoBehaviour
     private Text text;
     public static UI_Update Instance;
     //пенальти за пропуск порталов
-    public float penalty;
+    private float Penalty;
+    public float penalty
+    {
+        get { return Penalty; }
+        set {
+            Penalty = value;
+            forceUpdate = true;
+            }
+    }
+
     //форс апдейт очков
-    public bool forceUpdate;
+    private bool forceUpdate;
     public bool IsPaused { get; private set; }
 
 
@@ -44,7 +53,7 @@ public class UI_Update : MonoBehaviour
     /// </summary>
     public void ShowScore()
     {
-        score = Game_Manager.Instance.playerMoveScore * 2 - penalty;
+        score = Game_Manager.Instance.playerMoveScore * 2 - Penalty;
         if (highScore < score || (forceUpdate && !DeadScreen.activeInHierarchy))
         {
             highScore = score;
@@ -91,8 +100,8 @@ public class UI_Update : MonoBehaviour
     public void ToMenu()
     {
         Game_Manager.Instance.StopSlowMotion();
-        Game_Loader.Instance.Delete();
-        SceneManager.LoadScene(0);
+        GameObject transition = GameObject.FindWithTag("SceneTransition");
+        transition.GetComponent<Transitions>().SetTransition(0);
     }
     /// <summary>
     /// запустить паузу

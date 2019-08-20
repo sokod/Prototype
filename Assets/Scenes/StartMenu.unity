@@ -10504,6 +10504,19 @@ MonoBehaviour:
   - particlePicture: {fileID: 21300000, guid: b0271a05dfcd5c64db3283e43c32895b, type: 3}
     particleEffect: {fileID: 5034529155183508085, guid: 1a5cdf9af45935546b8066aa4f3877f2,
       type: 3}
+  blocks:
+  - name: Simple block
+    block: {fileID: 2637587118846443232, guid: a369fd8d245841847b8a686f5a21030a, type: 3}
+  - name: CanJump portal
+    block: {fileID: 2637587118846443232, guid: 088acbd1c3d7617438a1d600c9fa43b1, type: 3}
+  - name: Gems
+    block: {fileID: 2637587118846443232, guid: 273beb31196aa0e4c8d7a233f89db77a, type: 3}
+  - name: One side wall
+    block: {fileID: 2637587118846443232, guid: e3f5e172ed4fac243a4df9be96197181, type: 3}
+  - name: Portal with points
+    block: {fileID: 2637587118846443232, guid: 01c144f3021465346aa9a65bd5ceace5, type: 3}
+  - name: Substitution portal
+    block: {fileID: 2637587118846443232, guid: 85e4cc65e9c5331459c5f2d4c7364701, type: 3}
 --- !u!4 &445338277
 Transform:
   m_ObjectHideFlags: 0
@@ -42641,11 +42654,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: 'SceneTransition '
-      objectReference: {fileID: 0}
-    - target: {fileID: 3460836476166110817, guid: 0ee4ed69cb2c40344b0074ee92e33723,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3460836476166110819, guid: 0ee4ed69cb2c40344b0074ee92e33723,
         type: 3}

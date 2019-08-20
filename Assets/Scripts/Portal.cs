@@ -1,56 +1,48 @@
-﻿using System.Collections.Generic;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class Block_Controller : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class Portal : MonoBehaviour
 {
-    private SpriteRenderer sprite;
+    private Animator animator;
     private void Awake()
     {
         //если объект портал, то начать свечение
-        if (gameObject.tag == "Portal")
-        {
+            animator = GetComponent<Animator>();
             StartCoroutine(Glow());
-        }
-        //получаем спрайт
-        sprite = GetComponent<SpriteRenderer>();
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //если столкнулись с игроком, то делаем блок полупрозрачным. Если он стал полностью прозрачным - уничтожаем.
-        if (collision.gameObject.tag == "Player" && gameObject.tag=="Simple Wall")
-        {
-            sprite.color = new Color(Mathf.Clamp(sprite.color.r+0.3f,0f,1f), Mathf.Clamp(sprite.color.g+0.3f, 0f, 1f), Mathf.Clamp(sprite.color.b+0.3f, 0f, 1f), 1.0f);
-            if (sprite.color == Color.white)
-            {
-                sprite.color = new Color(1f, 1f, 1f, 0f);
-                GetComponent<BoxCollider2D>().enabled = false;
-                GetComponent<ParticleSystem>().Play();
-            }
-        }
-    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // если колизия игрока с порталом, то +5 очков, форсим апдейт очков, убираем колайдер портала и включаем корутин.
-        if (collision.gameObject.tag == "Player" && gameObject.tag == "Portal")
+        if (collision.gameObject.tag == "Player")
         {
             Debug.Log("Collision with player. gameObject - " + name + " " + tag);
-            UI_Update.Instance.penalty -= 2;
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
-            StartCoroutine(Dissapear());
+            animator.SetBool("PlayerCollision", true);
         }
         // если колизия лавы с порталом, то -3 очков, форсим апдейт очков, уничтожаем портал.
-        if (collision.gameObject.tag == "Finish" && gameObject.tag=="Portal")
+        if (collision.gameObject.tag == "Finish"&& animator.isActiveAndEnabled)
         {
-            UI_Update.Instance.penalty += 1;
-            Debug.Log("Collision with deathFloor. gameObject - " + name + " " + tag);
-            Destroy(gameObject);
+
+                Debug.Log("Collision with deathFloor. gameObject - " + name + " " + tag);
+                Destroy(gameObject);
+        }
+
+        //after expansion check for collisions with surroundings and change them with canJump portal;
+        if (collision.gameObject.tag == "Simple Wall" || collision.gameObject.tag == "One Side Wall")
+        {
+            Vector3 position = collision.gameObject.transform.position;
+            Debug.Log("Found object for substitude " + collision.gameObject.name);
+            Destroy(collision.gameObject);
+            Instantiate(Game_Loader.Instance.blocks[1].block, position, Quaternion.identity);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         //если столкнулись с полом, то уничтожаем себя.
-        if (collision.gameObject.tag == "Finish")
+        if (collision.gameObject.tag == "Finish" && animator.isActiveAndEnabled)
         {
             Destroy(gameObject);
         }
@@ -68,7 +60,7 @@ public class Block_Controller : MonoBehaviour
         //меняем альфу пока принудительно не остановим корутин
         while (true)
         {
-            if (glow.color.a<0.8f && brignting)
+            if (glow.color.a < 0.8f && brignting)
             {
                 glow.color += new Color(0f, 0f, 0f, 0.05f);
             }
@@ -77,24 +69,17 @@ public class Block_Controller : MonoBehaviour
                 brignting = false;
                 glow.color -= new Color(0f, 0f, 0f, 0.05f);
             }
-            if (glow.color.a<0.4f)
+            if (glow.color.a < 0.4f)
             {
                 brignting = true;
             }
             yield return new WaitForSeconds(0.1f);
         }
     }
-    /// <summary>
-    /// уменшаем объект до 0.1 и затем уничтожаем его
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator Dissapear()
+
+    public void DestroyPortal()
     {
-        while (transform.localScale.x>0.1f)
-        {
-            transform.localScale -= new Vector3(0.1f, 0.1f, 0f);
-            yield return new WaitForSeconds(0.05f);
-        }
+        animator.enabled = false;
         Destroy(gameObject);
     }
 

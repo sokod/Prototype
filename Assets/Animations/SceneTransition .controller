@@ -65,10 +65,10 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 0}
+    m_Controller: {fileID: 9100000}
   m_AnimatorLayers:
   - serializedVersion: 5
-    m_Name: ChangeLvl
+    m_Name: LvlChanger
     m_StateMachine: {fileID: 4920740362701266371}
     m_Mask: {fileID: 0}
     m_Motions: []
@@ -88,7 +88,7 @@ AnimatorState:
   m_PrefabAsset: {fileID: 0}
   m_Name: Scene_Transition
   m_Speed: 1
-  m_CycleOffset: 0
+  m_CycleOffset: 0.11
   m_Transitions:
   - {fileID: -7606490068952733123}
   m_StateMachineBehaviours: []
@@ -113,11 +113,11 @@ AnimatorStateMachine:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ChangeLvl
+  m_Name: LvlChanger
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 524416839288436915}
-    m_Position: {x: 270, y: -10, z: 0}
+    m_Position: {x: 270, y: 20, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -2745632763334028787}
     m_Position: {x: 270, y: 130, z: 0}
@@ -127,7 +127,7 @@ AnimatorStateMachine:
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
-  m_EntryPosition: {x: 20, y: 120, z: 0}
+  m_EntryPosition: {x: 290, y: -70, z: 0}
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 524416839288436915}

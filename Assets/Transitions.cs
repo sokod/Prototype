@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 public class Transitions : MonoBehaviour
 {
     Animator animator;
-    int lvl;
+    int lvl=-1;
 
     private void Awake()
     {
@@ -13,8 +13,8 @@ public class Transitions : MonoBehaviour
 
     public void SetTransition(int lvl)
     {
-        animator.SetTrigger("ChangeLvl");
         this.lvl = lvl;
+        animator.SetTrigger("ChangeLvl");
     }
 
     public void OnTransitionComplete()

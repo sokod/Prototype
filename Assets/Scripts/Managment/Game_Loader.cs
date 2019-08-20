@@ -9,6 +9,13 @@ public struct SaveParticlesInUI
     public GameObject particleEffect;
 }
 
+[System.Serializable]
+public struct Blocks
+{
+    public string name;
+    public GameObject block;
+}
+
 public class Game_Loader : MonoBehaviour
 {
     private GameObject player_body;
@@ -21,7 +28,7 @@ public class Game_Loader : MonoBehaviour
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
     public SaveParticlesInUI[] jumpEffectsPrefabs;
     public SaveParticlesInUI[] collisionEffectPrefabs;
-
+    public Blocks[] blocks;
     private void Awake()
     {
         if (Instance == null)
