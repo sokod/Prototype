@@ -42,8 +42,7 @@ public class Game_Loader : MonoBehaviour
             return;
         }
         LoadBuild();
-        gems = 100;
-        //gems = PlayerPrefs.GetInt("Gems", 0);
+        gems = PlayerPrefs.GetInt("Gems", 0);
         DontDestroyOnLoad(gameObject);
     }
 

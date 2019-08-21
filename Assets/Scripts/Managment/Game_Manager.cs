@@ -47,6 +47,7 @@ public class Game_Manager : MonoBehaviour
             Time.timeScale = 1f / slowDownFactor;
             Time.fixedDeltaTime /= slowDownFactor;
             slowMotionEnabled = true;
+            StartCoroutine(PenaltyForSlowMotion());
         }
     }
     /// <summary>
@@ -63,6 +64,20 @@ public class Game_Manager : MonoBehaviour
         }
     }
 
+    IEnumerator PenaltyForSlowMotion()
+    {
+        int timer=0;
+        while (slowMotionEnabled && !UI_Update.Instance.IsPaused)
+        {
+            timer++;
+            if (timer > 14)
+            {
+                UI_Update.Instance.penalty += 0.1f* (float)timer/10f;
+            }
+            yield return new WaitForSecondsRealtime(0.1f);
+        }
+        Debug.Log("Penalty initialized");
+    }
     /// <summary>
     /// получить угол поворота
     /// </summary>

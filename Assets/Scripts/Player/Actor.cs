@@ -78,7 +78,7 @@ public class Actor : MonoBehaviour
     /// <returns></returns>
     IEnumerator GameOver()
     {
-        yield return new WaitForSecondsRealtime(5f);
+        yield return new WaitForSecondsRealtime(1.25f);
         UI_Update.Instance.Pause();
     }
 

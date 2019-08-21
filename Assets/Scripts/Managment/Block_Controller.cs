@@ -8,7 +8,7 @@ public class Block_Controller : MonoBehaviour
     private void Awake()
     {
         //если объект портал, то начать свечение
-        if (gameObject.tag == "Portal")
+        if (gameObject.GetComponentsInChildren<SpriteRenderer>().Length>1)
         {
             StartCoroutine(Glow());
         }
@@ -17,6 +17,7 @@ public class Block_Controller : MonoBehaviour
     }
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        Debug.Log(gameObject.name + " entered collision with " + collision.gameObject.name);
         //если столкнулись с игроком, то делаем блок полупрозрачным. Если он стал полностью прозрачным - уничтожаем.
         if (collision.gameObject.tag == "Player" && gameObject.tag=="Simple Wall")
         {
@@ -31,10 +32,10 @@ public class Block_Controller : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log(gameObject.name + " entered trigger with " + collision.gameObject.name);
         // если колизия игрока с порталом, то +5 очков, форсим апдейт очков, убираем колайдер портала и включаем корутин.
         if (collision.gameObject.tag == "Player" && gameObject.tag == "Portal")
         {
-            Debug.Log("Collision with player. gameObject - " + name + " " + tag);
             UI_Update.Instance.penalty -= 2;
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
             StartCoroutine(Dissapear());

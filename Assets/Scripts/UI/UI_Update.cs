@@ -13,8 +13,11 @@ public class UI_Update : MonoBehaviour
     {
         get { return Penalty; }
         set {
-            Penalty = value;
-            forceUpdate = true;
+            if (score > 0.1f)
+            {
+                Penalty = value;
+                forceUpdate = true;
+            }
             }
     }
 
@@ -54,6 +57,7 @@ public class UI_Update : MonoBehaviour
     public void ShowScore()
     {
         score = Game_Manager.Instance.playerMoveScore * 2 - Penalty;
+
         if (highScore < score || (forceUpdate && !DeadScreen.activeInHierarchy))
         {
             highScore = score;
