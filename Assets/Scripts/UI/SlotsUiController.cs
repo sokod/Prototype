@@ -16,6 +16,8 @@ public class SlotsUiController : MonoBehaviour
     }
     private void Awake()
     {
+        Debug.Log("Getting value of unlocked items");
+        //unlockedSkins=PlayerPrefs.GetInt(gameObject.name, 1);
         PlayerPrefs.GetInt(gameObject.name, 1);
     }
     public void UnlockSkin(int number)
@@ -52,5 +54,4 @@ public class SlotsUiController : MonoBehaviour
             positionOfCurrentObject = value;
         }
     }
-
 }

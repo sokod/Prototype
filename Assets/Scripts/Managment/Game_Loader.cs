@@ -26,8 +26,10 @@ public class Game_Loader : MonoBehaviour
     public static Game_Loader Instance;
     public List<GameObject> bodyPrefabs = new List<GameObject>();
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
-    public SaveParticlesInUI[] jumpEffectsPrefabs;
-    public SaveParticlesInUI[] collisionEffectPrefabs;
+    public List<GameObject> jumpEffectPrefabs = new List<GameObject>();
+    public List<GameObject> collisionEffectPrefabs = new List<GameObject>();
+    //public SaveParticlesInUI[] jumpEffectsPrefabs;
+   // public SaveParticlesInUI[] collisionEffectPrefabs;
     public Blocks[] blocks;
     private void Awake()
     {
@@ -42,7 +44,8 @@ public class Game_Loader : MonoBehaviour
             return;
         }
         LoadBuild();
-        gems = PlayerPrefs.GetInt("Gems", 0);
+        gems = 1000;
+        //gems = PlayerPrefs.GetInt("Gems", 0);
         DontDestroyOnLoad(gameObject);
     }
 
@@ -129,7 +132,19 @@ public class Game_Loader : MonoBehaviour
             if (arrow.name == name)
                 arrowHead = arrow;
         }
-
+        name = PlayerPrefs.GetString("JumpEffect", "JumpEffect");
+        foreach(GameObject jump in jumpEffectPrefabs)
+        {
+            if (jump.name == name)
+                jumpEffect = jump;
+        }
+        name = PlayerPrefs.GetString("CollisionEffect", "CollisionEffect");
+        foreach (GameObject CollisionEffect in collisionEffectPrefabs)
+        {
+            if (CollisionEffect.name == name)
+                collisionEffect = CollisionEffect;
+        }
+        /*
         name = PlayerPrefs.GetString("JumpEffect", "JumpEffect");
         for (int i = 0; i < jumpEffectsPrefabs.Length; i++){
             if (jumpEffectsPrefabs[i].particleEffect.name == name)
@@ -141,6 +156,7 @@ public class Game_Loader : MonoBehaviour
             if (collisionEffectPrefabs[i].particleEffect.name == name)
                 collisionEffect = collisionEffectPrefabs[i].particleEffect;
         }
+        */
     }
 
     public void SaveCurrentBuild()
@@ -178,10 +194,18 @@ public class Game_Loader : MonoBehaviour
     {
         GameObject parent = GameObject.FindGameObjectWithTag("Player");
         if (!parent) return;
-         Instantiate(jumpEffect, parent.transform.position, Quaternion.identity, parent.transform);
-         Instantiate(collisionEffect, parent.transform.position, Quaternion.identity, parent.transform);
-         Instantiate(arrowHead, parent.transform.position, Quaternion.identity, parent.transform);
-         Instantiate(player_body, parent.transform.position, Quaternion.identity, parent.transform); 
+        else
+        {
+            Instantiate(jumpEffect, parent.transform.position, Quaternion.identity, parent.transform);
+            Instantiate(collisionEffect, parent.transform.position, Quaternion.identity, parent.transform);
+            Instantiate(arrowHead, parent.transform.position, Quaternion.identity, parent.transform);
+            Instantiate(player_body, parent.transform.position, Quaternion.identity, parent.transform);
+            //GameObject player_holder = new GameObject("Player_holder");
+            //player_holder.transform.parent = parent.transform;
+            //player_holder.transform.localPosition = Vector3.zero;
+            //player_holder.transform.localScale = Vector3.one;
+            //Instantiate(player_body, parent.transform.position, Quaternion.identity, player_holder.transform);
+        }
     }
     public void Delete()
     {

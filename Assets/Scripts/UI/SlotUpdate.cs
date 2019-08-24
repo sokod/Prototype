@@ -8,7 +8,8 @@ public class SlotUpdate : MonoBehaviour
     public bool HasObject { get; private set;} //настроен ли объект
     private Image slot_image;
     private GameObject slot_prefab;
-    public Button slot_button;
+    private ParticleSystem slot_Particle;
+    public Button slot_button { get; set; }
     private GameObject slot_blocker;
     private int price;
     private GameObject priceTagPrefab;
@@ -50,10 +51,10 @@ public class SlotUpdate : MonoBehaviour
         }
         else if (gameObject.transform.parent.name == "Jump_Effect_Holder")
         {
-            if (Game_Loader.Instance.jumpEffectsPrefabs.Length>pos)
+            if (Game_Loader.Instance.jumpEffectPrefabs.Count > pos)
             {
-                slot_prefab = Game_Loader.Instance.jumpEffectsPrefabs[pos].particleEffect;
-                SetImage(Game_Loader.Instance.jumpEffectsPrefabs[pos].particlePicture);
+                slot_prefab = Game_Loader.Instance.jumpEffectPrefabs[pos];
+                SetParticle(new Vector2(10,10));
                 SetButton();
                 price = (pos + 1) * 20;
             }
@@ -64,10 +65,10 @@ public class SlotUpdate : MonoBehaviour
         }
         else if (gameObject.transform.parent.name == "Collision_Effect_Holder")
         {
-            if (Game_Loader.Instance.collisionEffectPrefabs.Length>pos)
+            if (Game_Loader.Instance.collisionEffectPrefabs.Count > pos)
             {
-                slot_prefab = Game_Loader.Instance.collisionEffectPrefabs[pos].particleEffect;
-                SetImage(Game_Loader.Instance.collisionEffectPrefabs[pos].particlePicture);
+                slot_prefab = Game_Loader.Instance.collisionEffectPrefabs[pos];
+                SetParticle(new Vector2(50,50));
                 SetButton();
                 price = (pos + 1) * 5;
             }
@@ -106,15 +107,29 @@ public class SlotUpdate : MonoBehaviour
                 SetPriceTag();
             }
         }
-
+        // если слот заполенный но ещё заблокирован
         if (slot_blocker != null && HasObject && pos > parentController.unlockedSkins+1)
         {
-            slot_image.enabled = false;
+            //если это система частиц, то блокируем её, нет - блокируем спрайт.
+            if (slot_Particle == null)
+            {
+                slot_image.enabled = false;
+            }
+            else
+            {
+                slot_Particle.gameObject.SetActive(false);
+            }
             slot_button.interactable = false;
             slot_blocker.SetActive(true);
         }
     }
-
+    private void OnEnable()
+    {
+        if (slot_Particle != null)
+        {
+            slot_Particle.Play();
+        }
+    }
     private void SetPriceTag()
     {
         priceTagPrefab = Instantiate(parentController.price_Tag, gameObject.transform);
@@ -134,11 +149,31 @@ public class SlotUpdate : MonoBehaviour
         slot_image.enabled = true;
         HasObject = true;
     }
-    private void SetImage(Sprite picture)
+    private void SetParticle(Vector2 scale)
     {
-        slot_image = gameObject.GetComponentsInChildren<Image>()[1];
-        slot_image.sprite = picture;
-        slot_image.enabled = true;
+        GameObject particleObj = Instantiate(slot_prefab, transform.position, Quaternion.identity);
+        slot_Particle = particleObj.GetComponent<ParticleSystem>();
+        UnityEngine.UI.Extensions.UIParticleSystem UIParticle;
+        Material previousMaterial;
+        if (slot_prefab.transform.childCount>0)
+        {
+            foreach (Transform child in particleObj.transform)
+            {
+                previousMaterial = child.gameObject.GetComponent<ParticleSystemRenderer>().material;
+                UIParticle = child.gameObject.AddComponent<UnityEngine.UI.Extensions.UIParticleSystem>();
+                UIParticle.material = previousMaterial;
+                UIParticle.rectTransform.sizeDelta = Vector2.one;
+            }
+        }
+        previousMaterial = particleObj.GetComponent<ParticleSystemRenderer>().material;
+        UIParticle = particleObj.AddComponent<UnityEngine.UI.Extensions.UIParticleSystem>();
+        UIParticle.material = previousMaterial;
+        particleObj.transform.SetParent(gameObject.transform);
+        particleObj.transform.localPosition = Vector3.zero;
+        particleObj.transform.localScale = scale;
+        UIParticle.rectTransform.sizeDelta = gameObject.GetComponent<RectTransform>().sizeDelta / scale;
+        ParticleSystem.MainModule main = slot_Particle.main;
+        main.loop = true;
         HasObject = true;
     }
 
