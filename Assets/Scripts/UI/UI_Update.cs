@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class UI_Update : MonoBehaviour
 {
-    private Text text;
+    public Text text;
     public static UI_Update Instance;
     //пенальти за пропуск порталов
     private float Penalty;
@@ -30,6 +30,8 @@ public class UI_Update : MonoBehaviour
     /// экран game over
     /// </summary>
     public GameObject DeadScreen;
+    public GameObject PopUp;
+
     // текст с очками
     public Text HighestScore;
 
@@ -137,5 +139,25 @@ public class UI_Update : MonoBehaviour
     public void ActivatePanel(GameObject panel)
     {
         panel.SetActive(!panel.activeSelf);
+    }
+
+    public void ShowPopUp(bool showGem,Transform transform, string text)
+    {
+
+        GameObject instantiated = Instantiate(PopUp, this.transform, false);
+        Text instantiated_text = instantiated.GetComponentInChildren<Text>();
+        instantiated_text.text = text;
+        if (!showGem)
+        {
+            instantiated.GetComponentInChildren<Image>().enabled = false;
+            instantiated_text.color = Color.white;
+        }
+
+        instantiated.transform.position = Camera.main.WorldToScreenPoint(transform.position);
+        
+        Animator popUp = instantiated.GetComponent<Animator>();
+        AnimatorClipInfo popUpInfo = popUp.GetCurrentAnimatorClipInfo(0)[0];
+        popUp.Play("Pop-Up");
+        Destroy(instantiated, popUpInfo.clip.length);
     }
 }

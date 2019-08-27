@@ -28,8 +28,6 @@ public class Game_Loader : MonoBehaviour
     public List<GameObject> arrowHeadPrefabs = new List<GameObject>();
     public List<GameObject> jumpEffectPrefabs = new List<GameObject>();
     public List<GameObject> collisionEffectPrefabs = new List<GameObject>();
-    //public SaveParticlesInUI[] jumpEffectsPrefabs;
-   // public SaveParticlesInUI[] collisionEffectPrefabs;
     public Blocks[] blocks;
     private void Awake()
     {
@@ -44,8 +42,7 @@ public class Game_Loader : MonoBehaviour
             return;
         }
         LoadBuild();
-        gems = 1000;
-        //gems = PlayerPrefs.GetInt("Gems", 0);
+        gems = PlayerPrefs.GetInt("Gems", 0);
         DontDestroyOnLoad(gameObject);
     }
 

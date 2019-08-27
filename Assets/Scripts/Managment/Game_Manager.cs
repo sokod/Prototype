@@ -67,15 +67,21 @@ public class Game_Manager : MonoBehaviour
     IEnumerator PenaltyForSlowMotion()
     {
         int timer=0;
+        int sizeDefault = UI_Update.Instance.text.fontSize;
         while (slowMotionEnabled && !UI_Update.Instance.IsPaused)
         {
             timer++;
             if (timer > 14)
             {
                 UI_Update.Instance.penalty += 0.1f* (float)timer/10f;
+                UI_Update.Instance.text.color = new Color(UI_Update.Instance.text.color.r, UI_Update.Instance.text.color.g-0.05f, UI_Update.Instance.text.color.b-0.05f);
+                UI_Update.Instance.text.fontSize = Mathf.Clamp(UI_Update.Instance.text.fontSize+1,80,100);
+                if (UI_Update.Instance.text.fontSize == 100) UI_Update.Instance.text.fontSize = 80;
             }
             yield return new WaitForSecondsRealtime(0.1f);
         }
+        UI_Update.Instance.text.color = Color.white;
+        UI_Update.Instance.text.fontSize = sizeDefault;
         Debug.Log("Penalty initialized");
     }
     /// <summary>

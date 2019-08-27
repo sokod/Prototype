@@ -12,6 +12,7 @@ public class Spawner : MonoBehaviour
     {
         Y_position = gameObject.transform.position.y;
         lastSpawnedPosition = new Vector3(0, -3, 0);
+        Spawn();
     }
 
     void Spawn()
@@ -90,7 +91,6 @@ public class Spawner : MonoBehaviour
         {
             coordinates = FormNewCoordinate(difficulty);
         }
-        Debug.LogWarning(coordinates.y);
         return coordinates;
     }
 

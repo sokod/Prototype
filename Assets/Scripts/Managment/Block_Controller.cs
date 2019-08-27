@@ -37,12 +37,13 @@ public class Block_Controller : MonoBehaviour
         if (collision.gameObject.tag == "Player" && gameObject.tag == "Portal")
         {
             UI_Update.Instance.penalty -= 2;
-            
+            UI_Update.Instance.ShowPopUp(false, gameObject.transform, "+2");
             StartCoroutine(Dissapear());
         }
         else if (collision.gameObject.tag == "Player" && gameObject.tag == "Gem")
         {
             Game_Loader.Instance.UpdateGems(5);
+            UI_Update.Instance.ShowPopUp(true, gameObject.transform, "+5");
             Debug.LogWarning("Need to show message of adding gems");
             StartCoroutine(Dissapear());
         }
