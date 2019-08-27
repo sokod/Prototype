@@ -37,7 +37,13 @@ public class Block_Controller : MonoBehaviour
         if (collision.gameObject.tag == "Player" && gameObject.tag == "Portal")
         {
             UI_Update.Instance.penalty -= 2;
-            gameObject.GetComponent<CircleCollider2D>().enabled = false;
+            
+            StartCoroutine(Dissapear());
+        }
+        else if (collision.gameObject.tag == "Player" && gameObject.tag == "Gem")
+        {
+            Game_Loader.Instance.UpdateGems(5);
+            Debug.LogWarning("Need to show message of adding gems");
             StartCoroutine(Dissapear());
         }
         // если колизия лавы с порталом, то -3 очков, форсим апдейт очков, уничтожаем портал.
@@ -91,6 +97,7 @@ public class Block_Controller : MonoBehaviour
     /// <returns></returns>
     IEnumerator Dissapear()
     {
+        gameObject.GetComponent<CircleCollider2D>().enabled = false;
         while (transform.localScale.x>0.1f)
         {
             transform.localScale -= new Vector3(0.1f, 0.1f, 0f);

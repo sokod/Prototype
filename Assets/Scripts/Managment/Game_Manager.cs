@@ -7,7 +7,7 @@ public class Game_Manager : MonoBehaviour
     private GameObject deathFloor;
     private GameObject player;
     public float floorSpeed; // regulate speed in Inspector;
-    public float playerMoveScore; 
+    public float playerMoveScore { private set; get; }
     public static Game_Manager Instance;
 
     private float slowDownFactor;
