@@ -11,18 +11,17 @@ public class Portal : MonoBehaviour
         //если объект портал, то начать свечение
             animator = GetComponent<Animator>();
             StartCoroutine(Glow());
+            StartCoroutine(Rotate());
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // если колизия игрока с порталом, то +5 очков, форсим апдейт очков, убираем колайдер портала и включаем корутин.
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.tag == "Player" && animator!=null)
         {
             Debug.Log("Collision with player. gameObject - " + name + " " + tag);
             gameObject.GetComponent<CircleCollider2D>().enabled = false;
             animator.SetBool("PlayerCollision", true);
         }
-        // если колизия лавы с порталом, то -3 очков, форсим апдейт очков, уничтожаем портал.
         if (collision.gameObject.tag == "Finish"&& animator.isActiveAndEnabled)
         {
 
@@ -76,7 +75,15 @@ public class Portal : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+    IEnumerator Rotate()
+    {
+        while(true)
+        {
 
+            transform.Rotate(new Vector3(0,0,-4f));
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
     public void DestroyPortal()
     {
         animator.enabled = false;
@@ -86,6 +93,6 @@ public class Portal : MonoBehaviour
     private void OnDestroy()
     {
         //останавливаем корутин свечения
-        StopCoroutine(Glow());
+        StopAllCoroutines();
     }
 }

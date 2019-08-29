@@ -11,6 +11,7 @@ public class Block_Controller : MonoBehaviour
         if (gameObject.GetComponentsInChildren<SpriteRenderer>().Length>1)
         {
             StartCoroutine(Glow());
+            StartCoroutine(Rotate());
         }
         //получаем спрайт
         sprite = GetComponent<SpriteRenderer>();
@@ -98,6 +99,17 @@ public class Block_Controller : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
     }
+
+    IEnumerator Rotate()
+    {
+        while (true)
+        {
+
+            transform.Rotate(new Vector3(0, 0, -4f));
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
     /// <summary>
     /// уменшаем объект до 0.1 и затем уничтожаем его
     /// </summary>
@@ -116,6 +128,6 @@ public class Block_Controller : MonoBehaviour
     private void OnDestroy()
     {
         //останавливаем корутин свечения
-        StopCoroutine(Glow());
+        StopAllCoroutines();
     }
 }

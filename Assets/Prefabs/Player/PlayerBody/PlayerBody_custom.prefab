@@ -74,7 +74,7 @@ SpriteRenderer:
   m_SortingLayerID: 193209215
   m_SortingLayer: 3
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 21ebad67279312546a5464ccc13ceb71, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1e8992c87ccf4cf4983c332e8b720816, type: 3}
   m_Color: {r: 0, g: 0.85711694, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -239,10 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1dd3458bfca92624793f62b172ef8753, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpEffect: {fileID: 0}
-  maxStretch: 2
-  jumpForce: 300
-  maxJumps: 1
 --- !u!114 &1629521294065383891
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -255,4 +251,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8af351d2bf9aa50469b07b2ff0fdb881, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  collisionParticle: {fileID: 0}
