@@ -5,7 +5,7 @@ using UnityEngine;
 public class Actor : MonoBehaviour
 {
     private Player_Controller controller;
-    public ParticleSystem collisionParticle;
+    private ParticleSystem collisionParticle;
     private Rigidbody2D player_rb;
 
     private void Awake()

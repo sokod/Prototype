@@ -5,29 +5,30 @@ using UnityEngine.EventSystems;
 
 public class Player_Controller : MonoBehaviour
 {
-    
-    public ParticleSystem jumpEffect;
-    [Space(15)]
-    public float maxStretch, jumpForce; // регулировка дистанции отдягивания, силы прыжка
-    public int maxJumps; //максимальное кол-во прыжков
-
-    private Vector2 touchedWorldPoint; //точка касания относительно камеры
-    private Ray2D rayToTouchedPoint; // луч от центра объекта к точке касания
+    #region Player control veriables
+    private float maxStretch = 2f;
+    private float jumpForce = 300f;
     private Touch touch; //касание
-    private float maxStretchSqr,force; //макс натяжение в квадрате; сила толчка.
-    private GameObject player; // главный объект игрока
-    private bool jumpReady; //натяжение достаточное для прыжка?
-    private int jumpCount;// параметр, отвечающий за возможность игрока совершать прыжок
-    private Rigidbody2D player_rb; //компонент rigid body игрока
+    private bool jumpReady; //натяжение достаточное для прыжка? Update
+    private bool canJump;//флаг на прыжок для fixedUpdate
     private Vector2 pushForceDirection; //направление толчка
     private Vector2 standartScale; // стандартный размер игрока
+    private Vector2 FirstTouch;
+    private float maxStretchSqr, force; //макс натяжение в квадрате; сила толчка.
+    private GameObject player; // главный объект игрока
+    private Rigidbody2D player_rb; //компонент rigid body игрока
+    #endregion Player control veriables
 
+    #region Graphics
+    private ParticleSystem jumpEffect;
     private LineRenderer arrowTail; //linerenderer стрелки
     private SpriteRenderer arrowHeadSprite;
-    private Camera MainCamera;
     private GameObject arrowHead;
     private SpriteRenderer sprite;
-    private bool touchedOverUI;
+    #endregion Graphics
+
+    private Camera MainCamera;
+
 
     /// <summary>
     /// ищем нужные компоненты на сцене
@@ -45,7 +46,6 @@ public class Player_Controller : MonoBehaviour
         MainCamera = Camera.main;
 
         MainCamera.GetComponentInChildren<Cinemachine.CinemachineVirtualCamera>().Follow = gameObject.transform;
-
         sprite = GetComponent<SpriteRenderer>();
     }
 
@@ -53,33 +53,19 @@ public class Player_Controller : MonoBehaviour
     void Start()
     {
         maxStretchSqr = maxStretch * maxStretch; //находим квадрат максимального отдягивания (так,вроде, быстрей).
-        jumpCount = maxJumps;
+        canJump = true;
         standartScale = player.transform.localScale;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!UI_Update.Instance.DeadScreen.activeInHierarchy) //только если не активно game over
-        {
-            if (Input.touchCount > 0)
-            {
-                //если регистрируем касание, то записываем информацию о нем в touch
-                touch = Input.GetTouch(0);
-                if (touch.phase == TouchPhase.Began && (!UI_Update.Instance.IsPaused))
-                {
-                    Game_Manager.Instance.StartSlowMotion(10);
-                }
-                // инициируем перемещение
-                Control(touch);
-            }
-        }
-        else ClearArrow();
+        Control();
     }
     void FixedUpdate()
     {
         //если касание завершено
-        if (touch.phase == TouchPhase.Ended && jumpReady && (!UI_Update.Instance.IsPaused) && (!touchedOverUI))
+        if (touch.phase == TouchPhase.Ended && jumpReady && (!UI_Update.Instance.IsPaused))
         {
             Jump(); // прыгаем
         }
@@ -91,7 +77,6 @@ public class Player_Controller : MonoBehaviour
 
         if (player.transform.localScale.y < standartScale.y)
             player.transform.localScale = new Vector2(player.transform.localScale.x, player.transform.localScale.y + 0.2f * Time.fixedDeltaTime);
-
     }
 
     /// <summary>
@@ -99,94 +84,96 @@ public class Player_Controller : MonoBehaviour
     /// </summary>
     void Jump()
     {
+        jumpReady = false; // jump is beign processed
+        jumpEffect.transform.position = player.transform.position; // ставим частицы на игрока
+        ResetPlayerMotion();
+        player_rb.AddForce(pushForceDirection.normalized * (150 + force * jumpForce), ForceMode2D.Force); // толкаем в направлении нажатия с силой * jumpForce
+        jumpEffect.Play(); // включаем выброс частиц
+        // уменшаем героя
+        player.transform.localScale *= Mathf.Clamp((1f - force / 4f), 0.6f, 0.85f);
+        ParticleSystem.MainModule main = jumpEffect.main;
+        main.startSpeedMultiplier = force * 3;
+        sprite.color = new Color(sprite.color.r - 0.4f, sprite.color.g - 0.4f, sprite.color.b - 0.4f);
+
+        canJump = false; // jump is done
+    }
+
+    private void ResetPlayerMotion()
+    {
         player_rb.velocity = Vector2.zero; //обнуляем перемещение игрока
         player_rb.inertia = 0f;
         player_rb.angularVelocity = 0f;
-        player_rb.AddForce(pushForceDirection.normalized * (150 + force * jumpForce), ForceMode2D.Force); // толкаем в направлении нажатия с силой * jumpForce
-        jumpReady = false;
-        jumpCount--;
-        jumpEffect.Play(); // включаем выброс частиц
-        // уменшаем героя
-        player.transform.localScale *= Mathf.Clamp((1f - force / 4f),0.6f,0.85f);
-        ParticleSystem.MainModule main = jumpEffect.main;
-        main.startSpeedMultiplier = force*3;
-
-        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r - 0.4f, sprite.color.g - 0.4f, sprite.color.b - 0.4f);
-
     }
 
     /// <summary>
     ///  замедляем время, даем возможность менять натяжение
     /// </summary>
     /// <param name="touch">касание</param>
-    private void Control(Touch touch)
+    private void Control()
     {
-        if (!UI_Update.Instance.IsPaused)
-            switch (touch.phase)
-            {
-                case TouchPhase.Began: //при регистрации касания замедляем время
-                case TouchPhase.Moved:
-                case TouchPhase.Stationary:
-                    touchedOverUI = false;
-                    if (CanJump())
-                        Dragging();
-                    break;
-
-                case TouchPhase.Canceled:
-                case TouchPhase.Ended:
-                    ClearArrow(); //убираем стрелку
-                    Game_Manager.Instance.StopSlowMotion();//возвращаемся к нормальному времени
-                    break;
-                default:
-                    break;
-            }
-        else touchedOverUI = true;
-    }
-
-    /// <summary>
-    /// Проверка на возможность прыжка
-    /// </summary>
-    /// <returns></returns>
-    public bool CanJump()
-    {
-        if (jumpCount > 0)
+        if (!UI_Update.Instance.DeadScreen.activeInHierarchy) //только если не активно game over
         {
-            return true;
+            
+            if (Input.touchCount > 0)
+            {
+                //если регистрируем касание, то записываем информацию о нем в touch
+                touch = Input.GetTouch(0);
+                if (!UI_Update.Instance.IsPaused)
+                {
+                    if (touch.phase == TouchPhase.Began)
+                    {
+                        Game_Manager.Instance.StartSlowMotion(10);
+                        FirstTouch = (Vector2)MainCamera.ScreenToWorldPoint(touch.position);
+                    }
+                    else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary)
+                    {
+                        if (canJump)
+                            Dragging(FirstTouch);
+                    }
+                    else if (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended)
+                    {
+                        ClearArrow(); //убираем стрелку
+                        Game_Manager.Instance.StopSlowMotion();//возвращаемся к нормальному времени
+                    }
+                }
+            }
         }
-        else return false;
+        else ClearArrow();
     }
 
     /// <summary>
     /// расчет вектора и силы натяжения, рисование стрелки 
     /// </summary>
-    private void Dragging()
+    private void Dragging(Vector2 firstTouchedWorldPoint)
     {
-        
-        touchedWorldPoint = (Vector2)MainCamera.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
-        pushForceDirection = touchedWorldPoint - (Vector2)player.transform.position; //расчитываем вектор натяжения
+
+        Vector2 touchedWorldPoint = (Vector2)MainCamera.ScreenToWorldPoint(touch.position); //позиция нажатия относительно координат камеры
+        pushForceDirection = touchedWorldPoint - firstTouchedWorldPoint; //расчитываем вектор натяжения
+        Ray2D rayFromPlayer = new Ray2D(player.transform.position, pushForceDirection); // луч от центра игрока в направление натяжения
+        Vector2 endLinePoint = rayFromPlayer.GetPoint(pushForceDirection.magnitude); // получаем вектор конца на точке натяжения
+
+        Debug.DrawLine(firstTouchedWorldPoint, touchedWorldPoint, Color.blue); // вектор натяжения игрока изначальный
+        Debug.DrawLine(player.transform.position, endLinePoint, Color.white); //вектор натяжения игрока скоректированный под центр объекта
+
         if (pushForceDirection.sqrMagnitude > maxStretchSqr) // если натяжение больше чем максимально допустимое
         {
-            rayToTouchedPoint = new Ray2D(player.transform.position, pushForceDirection); //задаем луч от центра объекта игрока к вектору направления
-            touchedWorldPoint = rayToTouchedPoint.GetPoint(maxStretch); //Перезаписываем точку касания в точку по лучу на максимально допустимую дистанцию
+            endLinePoint = rayFromPlayer.GetPoint(maxStretch); //Перезаписываем точку касания в точку по лучу на максимально допустимую дистанцию
+            Debug.DrawLine(player.transform.position, endLinePoint, Color.red);
         }
 
-        if (pushForceDirection.sqrMagnitude <= 0.3) // если натяжение слишком мало или большое
+        if (pushForceDirection.sqrMagnitude <= 0.3) // если натяжение слишком мало, совершить прыжок невозможно
         {
             jumpReady = false;
             ClearArrow(); //не рисуем стрелку
-            Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.black);
+            Debug.DrawLine(player.transform.position, endLinePoint, Color.black);
 
         }
         else
         {
             jumpReady = true;
-            Debug.DrawLine(touchedWorldPoint, player.transform.position, Color.red);
             force = (Mathf.Clamp(pushForceDirection.sqrMagnitude, 0f, maxStretchSqr)) / maxStretchSqr; // ограничиваем силу прыжка от 0 до 1;
-            UpdateArrow(force); //обновляем стрелку
+            UpdateArrow(force,player.transform.position,endLinePoint); //обновляем стрелку
         }
-        arrowHead.transform.position = touchedWorldPoint; // ставим стрелку в нажатую точку
-        jumpEffect.transform.position = player.transform.position; // ставим частицы на игрока
-
     }
 
     /// <summary>
@@ -197,11 +184,13 @@ public class Player_Controller : MonoBehaviour
         arrowTail.SetPositions(new Vector3[] { Vector3.zero, Vector3.zero });
         arrowHeadSprite.color = new Color(1f, 1f, 1f, 0f);
     }
+
     /// <summary>
     /// обновление местоположения стрелки, обновление градиента цвета
     /// </summary>
-    private void UpdateArrow(float force)
+    private void UpdateArrow(float force, Vector2 firstPoint, Vector2 endPoint)
     {
+        arrowHead.transform.position = endPoint; // ставим стрелку в нажатую точку
         Gradient gradient = new Gradient();
         gradient.SetKeys( //обновляем цвет стрелки, чем больше сила - тем ярче цвет.
                 new GradientColorKey[] { new GradientColorKey(Color.white, 0.0f), new GradientColorKey(new Color(1f, 1f-force*0.6f, 1f-force*0.6f, 1f), 0.6f) },
@@ -209,24 +198,21 @@ public class Player_Controller : MonoBehaviour
                 );
 
         arrowTail.colorGradient = gradient; //устанавливаем новый цвет
-        arrowTail.SetPosition(0, (Vector2)player.transform.position); //начальная точка от объекта игрока
-        arrowTail.SetPosition(1, (Vector2)touchedWorldPoint); //конечная точка к касанию
+        arrowTail.SetPosition(0, firstPoint); //начальная точка от объекта игрока
+        arrowTail.SetPosition(1, endPoint); //конечная точка к касанию
         arrowHeadSprite.color= new Color(1f, 1f - force*0.7f, 1f - force*0.7f, 0.8f); // обновляем цвет конца стрелки
         arrowHead.transform.localScale = new Vector2(Mathf.Clamp(0.15f + force*0.35f,0.15f,0.3f), Mathf.Clamp(0.15f + force*0.35f, 0.15f, 0.3f)); // обновляем размер стрелки
         // поварачиваем в сторону направления
         Game_Manager.Instance.SetAngle(pushForceDirection.normalized, arrowHead.transform);
-
-        // arrowHead.transform.up = (player.transform.position - arrowHead.transform.position); - Дешевая альтернатива расчету угла через Atan.
-
         //Важно что бы частицы не были привязаны к трансформу игрока, иначе просчет поворота работать не будет.
         Game_Manager.Instance.SetAngle(pushForceDirection.normalized, jumpEffect.transform);
-
     }
     /// <summary>
     /// обнулить прыжки
     /// </summary>
     public void ResetJumps()
     {
-        if (jumpCount <= 0) sprite.color = new Color(sprite.color.r + 0.4f, sprite.color.g + 0.4f, sprite.color.b + 0.4f);
-        jumpCount = maxJumps;    }
+        if (!canJump) sprite.color = new Color(sprite.color.r + 0.4f, sprite.color.g + 0.4f, sprite.color.b + 0.4f);
+        canJump = true;
+    }
 }

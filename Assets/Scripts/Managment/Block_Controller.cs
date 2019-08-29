@@ -47,6 +47,11 @@ public class Block_Controller : MonoBehaviour
             Debug.LogWarning("Need to show message of adding gems");
             StartCoroutine(Dissapear());
         }
+        else if (collision.gameObject.tag=="Player" && gameObject.tag == "Simple Wall")
+        {
+            StartCoroutine(Dissapear());
+        }
+
         // если колизия лавы с порталом, то -3 очков, форсим апдейт очков, уничтожаем портал.
         if (collision.gameObject.tag == "Finish" && gameObject.tag=="Portal")
         {
@@ -54,6 +59,7 @@ public class Block_Controller : MonoBehaviour
             Debug.Log("Collision with deathFloor. gameObject - " + name + " " + tag);
             Destroy(gameObject);
         }
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
