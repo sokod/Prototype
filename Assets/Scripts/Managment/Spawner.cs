@@ -5,7 +5,7 @@ public class Spawner : MonoBehaviour
     private Vector3 lastSpawnedPosition;
     private int difficulty = 0;
     private float Y_position;
-    public float rangeModificator=15f;
+    public float rangeModificator=5f;
 
     // Start is called before the first frame update
     void Start()
@@ -85,7 +85,7 @@ public class Spawner : MonoBehaviour
 
     Vector3 FormNewCoordinate(int difficulty)
     {
-        float minY = Mathf.Clamp((Random.Range(0.5f, 1.5f) * (difficulty+rangeModificator)/rangeModificator), 0.5f, 4f);
+        float minY = Mathf.Clamp((Random.Range(0.5f, 2f) * (difficulty+rangeModificator)/rangeModificator), 0.5f, 4f);
         Vector3 coordinates = new Vector3(Random.Range(-2.25f, 2.25f), lastSpawnedPosition.y + minY, 0);
         while ((coordinates - lastSpawnedPosition).sqrMagnitude < 2.5f)
         {

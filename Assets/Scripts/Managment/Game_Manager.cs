@@ -13,7 +13,8 @@ public class Game_Manager : MonoBehaviour
     private float slowDownFactor;
     public bool slowMotionEnabled {get; private set;}
     private Vector3 deathFloorUpForceVector;
-    private float startFloorSpeed;
+
+    public float startFloorSpeed { private set; get;}
 
     private void Awake()
     {
